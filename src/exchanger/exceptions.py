@@ -1,0 +1,6 @@
+class CurrencyException(Exception):
+    ...
+
+
+class ExchangeRateException(Exception):
+    ...
