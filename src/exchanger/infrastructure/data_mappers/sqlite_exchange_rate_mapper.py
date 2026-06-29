@@ -62,13 +62,13 @@ class SqliteExchangeRateDataMapper(ExchangeRateDataMapper):
             FROM exchange_rate AS er
             INNER JOIN currency AS c1 ON c1.id = er.base
             INNER JOIN currency AS c2 ON c2.id = er.target
-            WHERE c1.id = ?
-            AND c2.id = ?
+            WHERE c1.code = ?
+            AND c2.code = ?
             '''
 
             row = cursor.execute(
                 query,
-                (exchange_pair.base_id, exchange_pair.target_id)
+                (exchange_pair.base_code.value, exchange_pair.target_code.value)
             ).fetchone()
 
             return self._row_to_domain(row) if row else row

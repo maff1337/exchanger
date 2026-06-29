@@ -1,17 +1,13 @@
 from dataclasses import dataclass
 
+from exchanger.core.vo.currency_code import Code
+
 
 @dataclass(frozen=True)
 class ExchangePair:
-    base_id: int
-    target_id: int
+    base_code: Code
+    target_code: Code
 
     def __post_init__(self) -> None:
-        if not (isinstance(self.base_id, int) and isinstance(self.target_id, int)):
-            raise TypeError('base_id and target_id must be `int` type')
-
-        if self.base_id <= 0 or self.target_id <= 0:
-            raise ValueError('base_id and target_id must be positive')
-
-        if self.base_id == self.target_id:
-            raise ValueError('base_id and target_id cannot be equal')
+        if self.base_code == self.target_code:
+            raise ValueError('base_code and target_code cannot be equal')
