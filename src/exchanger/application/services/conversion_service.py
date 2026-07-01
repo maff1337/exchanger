@@ -15,6 +15,7 @@ class ConversionService(ConversionServiceProtocol):
     def convert(self, request_conversion: RequestConversion) -> ResponseConversion:
         base_code = request_conversion.exchange_pair.base_code
         target_code = request_conversion.exchange_pair.target_code
+        usd_code = Code('usd')
 
         exchange_rate = self._exchange_rate_repo.find_by_pair(
             request_conversion.exchange_pair
@@ -28,7 +29,8 @@ class ConversionService(ConversionServiceProtocol):
             )
 
             if exchange_rate is None:
-                usd_code = Code('USD')
+                if base_code == usd_code or target_code == usd_code:
+                    raise ValueError('No Exchange Pair')
 
                 new_base_pair = ExchangePair(base_code, usd_code)
                 new_target_pair = ExchangePair(target_code, usd_code)
