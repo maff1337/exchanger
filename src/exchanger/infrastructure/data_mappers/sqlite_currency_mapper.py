@@ -1,5 +1,5 @@
 from typing import Sequence
-from sqlite3 import Connection
+from sqlite3 import Connection, IntegrityError
 
 from exchanger.core.vo.currency_code import Code
 from exchanger.core.models.currency import Currency
@@ -30,13 +30,15 @@ class SqliteCurrencyDataMapper(CurrencyDataMapper):
 
             return row['id']
 
-    def get_by_code(self, code: Code) -> Currency | None:
+    def get_by_code(self, code: Code) -> Currency:
         with sqlite_cursor(self._conn) as cursor:
             query = 'SELECT * FROM currency WHERE code = ?'
 
             row = cursor.execute(query, (code.value,)).fetchone()
-
-            return self._row_to_domain(row) if row else row
+            if row:
+                return self._row_to_domain(row)
+            else:
+                raise IntegrityError('Currency not found')
 
     def get_all(self) -> Sequence[Currency]:
         with sqlite_cursor(self._conn) as cursor:

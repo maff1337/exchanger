@@ -1,9 +1,9 @@
 from typing import Sequence
 
+from exchanger.core.vo.currency_code import Code
 from exchanger.core.models.currency import Currency
 from exchanger.core.repositories.currency_repository import CurrencyRepository
 from exchanger.application.services.services_protocols import CurrencyServiceProtocol
-from exchanger.core.vo.currency_code import Code
 
 
 class CurrencyService(CurrencyServiceProtocol):
@@ -14,7 +14,7 @@ class CurrencyService(CurrencyServiceProtocol):
         id = self._currency_repo.create(currency)
         return id
 
-    def find_by_code(self, code: Code) -> Currency | None:
+    def find_by_code(self, code: Code) -> Currency:
         currency = self._currency_repo.find_by_code(code)
 
         return currency

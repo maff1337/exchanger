@@ -11,8 +11,9 @@ class ExchangeRateRepository(Protocol):
 
     @abstractmethod
     def find_by_pair(
-        self, exchange_pair: ExchangePair
-    ) -> ExchangeRate | None: ...
+        self,
+        exchange_pair: ExchangePair
+    ) -> ExchangeRate: ...
 
     @abstractmethod
     def find_all(self) -> Sequence[ExchangeRate]: ...

@@ -1,9 +1,9 @@
 from typing import Sequence
 
-from exchanger.application.services.services_protocols import ExchangeRateServiceProtocol
+from exchanger.core.vo.exchange_pair import ExchangePair
 from exchanger.core.models.exchange_rate import ExchangeRate
 from exchanger.core.repositories.exchange_rate_repository import ExchangeRateRepository
-from exchanger.core.vo.exchange_pair import ExchangePair
+from exchanger.application.services.services_protocols import ExchangeRateServiceProtocol
 
 
 class ExchangeRateService(ExchangeRateServiceProtocol):
@@ -14,7 +14,7 @@ class ExchangeRateService(ExchangeRateServiceProtocol):
         id = self._exchange_rate_repo.create(exchange_rate)
         return id
 
-    def find_by_pair(self, exchange_pair: ExchangePair) -> ExchangeRate | None:
+    def find_by_pair(self, exchange_pair: ExchangePair) -> ExchangeRate:
         exchange_rate = self._exchange_rate_repo.find_by_pair(exchange_pair)
         return exchange_rate
 

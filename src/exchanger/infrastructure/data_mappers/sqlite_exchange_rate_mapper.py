@@ -1,13 +1,13 @@
-from decimal import Decimal
-from sqlite3 import Connection
 from typing import Sequence
+from decimal import Decimal
+from sqlite3 import Connection, IntegrityError
 
-from exchanger.core.models.currency import Currency
-from exchanger.core.models.exchange_rate import ExchangeRate
 from exchanger.core.vo.currency_code import Code
+from exchanger.core.models.currency import Currency
 from exchanger.core.vo.exchange_pair import ExchangePair
-from exchanger.infrastructure.data_mappers.data_mappers import ExchangeRateDataMapper
+from exchanger.core.models.exchange_rate import ExchangeRate
 from exchanger.infrastructure.database.shared import sqlite_cursor
+from exchanger.infrastructure.data_mappers.data_mappers import ExchangeRateDataMapper
 
 
 class SqliteExchangeRateDataMapper(ExchangeRateDataMapper):
@@ -45,7 +45,7 @@ class SqliteExchangeRateDataMapper(ExchangeRateDataMapper):
 
             return row['id']
 
-    def get_by_pair(self, exchange_pair: ExchangePair) -> ExchangeRate | None:
+    def get_by_pair(self, exchange_pair: ExchangePair) -> ExchangeRate:
         with sqlite_cursor(self._conn) as cursor:
 
             query = '''SELECT er.id as id,
@@ -71,7 +71,10 @@ class SqliteExchangeRateDataMapper(ExchangeRateDataMapper):
                 (exchange_pair.base_code.value, exchange_pair.target_code.value)
             ).fetchone()
 
-            return self._row_to_domain(row) if row else row
+            if row:
+                return self._row_to_domain(row)
+            else:
+                raise IntegrityError('Exchange rate not found')
 
     def get_all(self) -> Sequence[ExchangeRate]:
         with sqlite_cursor(self._conn) as cursor:
