@@ -1,7 +1,8 @@
+from re import compile
 from decimal import Decimal
 from dataclasses import dataclass
 
-from exchanger.exceptions import ExchangeRateTypeMismatch
+from exchanger.exceptions import ExchangeRateException, ExchangeRateTypeMismatch
 from exchanger.infrastructure.dto.currency_dto import CurrencyDto
 
 
@@ -12,6 +13,7 @@ class CreateExchangeRateDto:
     rate: Decimal
 
     def __post_init__(self) -> None:
+        decimal_pattern = compile(r'^\d+(\.\d+)?$')
         if not isinstance(self.base_currency_dto, CurrencyDto):
             raise ExchangeRateTypeMismatch(
                 'Base_currency_dto must be `CurrencyDto` type')
@@ -20,9 +22,14 @@ class CreateExchangeRateDto:
             raise ExchangeRateTypeMismatch(
                 'Target_currency_dto must be `CurrencyDto` type')
 
-        if not isinstance(self.rate, Decimal):
+        if not isinstance(self.rate, (Decimal, str)):
             raise ExchangeRateTypeMismatch(
                 f'Rate must be `Decimal` type. Rate type - {type(self.rate)}')
+
+        if not decimal_pattern.match(str(self.rate)):
+            raise ExchangeRateException('Rate must be a valid Decimal number')
+
+        self.rate = Decimal(str(self.rate))
 
 
 @dataclass
@@ -63,3 +70,6 @@ class ExchangePairDto:
         if not isinstance(self.target_code, str):
             raise ExchangeRateTypeMismatch(
                 f'Target_code must be `str` type. Id type - {type(self.target_code)}')
+
+        self.base_code = self.base_code.strip()
+        self.target_code = self.target_code.strip()

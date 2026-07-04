@@ -1,3 +1,4 @@
+from re import compile
 from decimal import Decimal
 from dataclasses import dataclass
 
@@ -12,11 +13,12 @@ class RequestConversionDto:
     amount: Decimal
 
     def __post_init__(self) -> None:
+        decimal_pattern = compile(r'^\d+(\.\d+)?$')
         if not isinstance(self.amount, (Decimal, str)):
             raise ConversionException('Amount must be `Decimal` type')
 
-        if not str.isnumeric(str(self.amount)):
-            raise ConversionException('Amount must be a valid number')
+        if not decimal_pattern.match(str(self.amount)):
+            raise ConversionException('Amount must be a valid Decimal number')
 
         self.amount = Decimal(self.amount)
 
