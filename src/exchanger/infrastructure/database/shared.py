@@ -1,5 +1,5 @@
-from contextlib import contextmanager
 from sqlite3 import Connection
+from contextlib import contextmanager
 
 
 @contextmanager
