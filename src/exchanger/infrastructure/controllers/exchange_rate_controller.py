@@ -1,4 +1,3 @@
-from decimal import Decimal
 from dataclasses import asdict
 
 from exchanger.infrastructure.dto.currency_dto import CurrencyDto
@@ -21,27 +20,84 @@ class HttpExchangeRateController:
     def create_exchange_rate(self, request: HttpRequest) -> HttpResponse:
         try:
             if not request.body:
-                raise AttributeError('Body is missing')
+                raise ExchangeRateException('Body is missing')
 
             body = request.body
 
             if not isinstance(body, dict):
-                raise TypeError('JSON structure expected')
+                raise ExchangeRateException('JSON structure expected')
+
+            base_currency = body.get('baseCurrency')
+            target_currency = body.get('targetCurrency')
+            rate = body.get('rate')
+
+            if not base_currency:
+                raise ExchangeRateException(
+                    'Body param is missing: baseCurrency')
+
+            if not target_currency:
+                raise ExchangeRateException(
+                    'Body param is missing: targetCurrency')
+
+            if not rate:
+                raise ExchangeRateException('Body param is missing: rate')
+
+            base_c_id = base_currency.get('id')
+            base_c_code = base_currency.get('code')
+            base_c_name = base_currency.get('name')
+            base_c_sign = base_currency.get('sign')
+
+            target_c_id = target_currency.get('id')
+            target_c_code = target_currency.get('code')
+            target_c_name = target_currency.get('name')
+            target_c_sign = target_currency.get('sign')
+
+            if not base_c_id:
+                raise ExchangeRateException(
+                    'Body param is missing: baseCurrency: id')
+
+            if not base_c_code:
+                raise ExchangeRateException(
+                    'Body param is missing: baseCurrency: code')
+
+            if not base_c_name:
+                raise ExchangeRateException(
+                    'Body param is missing: baseCurrency: name')
+
+            if not base_c_sign:
+                raise ExchangeRateException(
+                    'Body param is missing: baseCurrency: sign')
+
+            if not target_c_id:
+                raise ExchangeRateException(
+                    'Body param is missing: targetCurrency: id')
+
+            if not target_c_code:
+                raise ExchangeRateException(
+                    'Body param is missing: targetCurrency: code')
+
+            if not target_c_name:
+                raise ExchangeRateException(
+                    'Body param is missing: targetCurrency: name')
+
+            if not target_c_sign:
+                raise ExchangeRateException(
+                    'Body param is missing: targetCurrency: sign')
 
             exchange_rate_dto = CreateExchangeRateDto(
                 base_currency_dto=CurrencyDto(
-                    id=body['baseCurrency']['id'],
-                    code=body['baseCurrency']['code'],
-                    name=body['baseCurrency']['fullName'],
-                    sign=body['baseCurrency']['sign']
+                    id=base_c_id,
+                    code=base_c_code,
+                    name=base_c_name,
+                    sign=base_c_sign
                 ),
                 target_currency_dto=CurrencyDto(
-                    id=body['targetCurrency']['id'],
-                    code=body['targetCurrency']['code'],
-                    name=body['targetCurrency']['fullName'],
-                    sign=body['targetCurrency']['sign']
+                    id=target_c_id,
+                    code=target_c_code,
+                    name=target_c_name,
+                    sign=target_c_sign
                 ),
-                rate=Decimal(body['rate'])
+                rate=rate
             )
 
             id = self._er_service.create(
@@ -84,7 +140,7 @@ class HttpExchangeRateController:
                     body={'message': 'Query params are missing'}
                 )
 
-            pair = request.query['pair']
+            pair = request.query.get('pair')
             if not pair:
                 return HttpResponse(
                     400,
@@ -93,7 +149,7 @@ class HttpExchangeRateController:
                 )
 
             if len(pair) != 6:
-                raise ValueError(
+                raise ExchangeRateException(
                     'Pair is not a valid exchange pair')
 
             exchange_pair_dto = ExchangePairDto(pair[:3], pair[3:])

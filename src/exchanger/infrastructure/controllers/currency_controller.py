@@ -34,10 +34,23 @@ class HttpCurrencyController:
                     body={'message': 'JSON structure expected'}
                 )
 
+            code = body.get('code')
+            name = body.get('name')
+            sign = body.get('sign')
+
+            if not code:
+                raise CurrencyException('Body param is missing: code')
+
+            if not name:
+                raise CurrencyException('Body param is missing: name')
+
+            if not sign:
+                raise CurrencyException('Body param is missing: sign')
+
             currency_dto = CreateCurrencyDto(
-                code=body['code'],
-                name=body['fullName'],
-                sign=body['sign']
+                code=code,
+                name=name,
+                sign=sign
             )
             id = self._currency_service.create(
                 currency=self._currency_dto_mapper.create_dto_to_domain(

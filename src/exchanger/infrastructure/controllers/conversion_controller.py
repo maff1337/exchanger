@@ -37,12 +37,25 @@ class HttpConversionController:
                     body={'message': 'JSON structure expected'}
                 )
 
+            from_curr = request.path_params.get('from')
+            to_curr = request.path_params.get('to')
+            amount = request.path_params.get('amount')
+
+            if not from_curr:
+                raise ConversionException('Query param is missing: from')
+
+            if not to_curr:
+                raise ConversionException('Query param is missing: to')
+
+            if not amount:
+                raise ConversionException('Query param is missing: amount')
+
             request_conversion_dto = RequestConversionDto(
                 exchange_pair=ExchangePairDto(
-                    base_code=request.path_params['from'],
-                    target_code=request.path_params['to']
+                    base_code=from_curr,
+                    target_code=to_curr
                 ),
-                amount=request.path_params['amount']
+                amount=amount
             )
 
             response_conversion = self._conversion_service.convert(
