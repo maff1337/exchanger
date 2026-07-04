@@ -1,12 +1,12 @@
 from dataclasses import asdict
 
-from exchanger.application.services.conversion_service import ConversionService
-from exchanger.core.models.conversion import RequestConversion
-from exchanger.infrastructure.controllers.types import HttpRequest, HttpResponse
-from exchanger.infrastructure.dto.conversion_dto import RequestConversionDto
 from exchanger.infrastructure.dto.exchange_rate_dto import ExchangePairDto
+from exchanger.infrastructure.dto.conversion_dto import RequestConversionDto
+from exchanger.application.services.conversion_service import ConversionService
+from exchanger.infrastructure.controllers.types import HttpRequest, HttpResponse
 from exchanger.infrastructure.dto_mappers.conversion_mapper import ConversionDtoMapper
 from exchanger.infrastructure.dto_mappers.exchange_rate_mapper import ExchangeRateDtoMapper
+from exchanger.exceptions import ConversionException, ExchangeRateException, ExchangeRateNotFound, NegativeAmount
 
 
 class HttpConversionController:
@@ -24,10 +24,18 @@ class HttpConversionController:
     def convert(self, request: HttpRequest) -> HttpResponse:
         try:
             if not request.path_params:
-                raise AttributeError('Qurry param is missing: path_params')
+                return HttpResponse(
+                    400,
+                    headers={'Content-Type': 'application/json'},
+                    body={'message': 'Path parameters are missing'}
+                )
 
             if not isinstance(request.path_params, dict):
-                raise TypeError('JSON structure expected')
+                return HttpResponse(
+                    400,
+                    headers={'Content-Type': 'application/json'},
+                    body={'message': 'JSON structure expected'}
+                )
 
             request_conversion_dto = RequestConversionDto(
                 exchange_pair=ExchangePairDto(
@@ -50,6 +58,21 @@ class HttpConversionController:
                 body=body
             )
             return response
-
-        except Exception:
-            raise
+        except ExchangeRateNotFound as e:
+            return HttpResponse(
+                status_code=404,
+                headers={'Content-Type': 'application/json'},
+                body={'message': str(e)}
+            )
+        except (NegativeAmount, ExchangeRateException, ConversionException) as e:
+            return HttpResponse(
+                status_code=400,
+                headers={'Content-Type': 'application/json'},
+                body={'message': str(e)}
+            )
+        except Exception as e:
+            return HttpResponse(
+                status_code=500,
+                headers={'Content-Type': 'application/json'},
+                body={'message': str(e)}
+            )

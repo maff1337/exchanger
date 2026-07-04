@@ -1,11 +1,12 @@
-from dataclasses import asdict
 from decimal import Decimal
+from dataclasses import asdict
 
-from exchanger.application.services.services_protocols import ExchangeRateServiceProtocol
-from exchanger.infrastructure.controllers.types import HttpRequest, HttpResponse
 from exchanger.infrastructure.dto.currency_dto import CurrencyDto
-from exchanger.infrastructure.dto.exchange_rate_dto import CreateExchangeRateDto, ExchangePairDto
+from exchanger.infrastructure.controllers.types import HttpRequest, HttpResponse
+from exchanger.application.services.services_protocols import ExchangeRateServiceProtocol
 from exchanger.infrastructure.dto_mappers.exchange_rate_mapper import ExchangeRateDtoMapper
+from exchanger.infrastructure.dto.exchange_rate_dto import CreateExchangeRateDto, ExchangePairDto
+from exchanger.exceptions import CurrencyCodeEquality, CurrencyEquality, ExchangeRateAlreadyExists, ExchangeRateException, ExchangeRateNotFound, ExchangeRateTypeMismatch, NegativeAmount
 
 
 class HttpExchangeRateController:
@@ -50,23 +51,46 @@ class HttpExchangeRateController:
             body = {'id': id}
 
             response = HttpResponse(
-                204, {'Content-Type': 'application/json'}, body)
+                204,
+                {'Content-Type': 'application/json'},
+                body
+            )
             return response
-
-        except Exception:
-            raise
+        except ExchangeRateAlreadyExists as e:
+            return HttpResponse(
+                status_code=409,
+                headers={'Content-Type': 'application/json'},
+                body={'message': str(e)}
+            )
+        except (NegativeAmount, ExchangeRateException, CurrencyEquality, CurrencyCodeEquality, ExchangeRateTypeMismatch) as e:
+            return HttpResponse(
+                400,
+                headers={'Content-Type': 'application/json'},
+                body={'message': str(e)}
+            )
+        except Exception as e:
+            return HttpResponse(
+                status_code=500,
+                headers={'Content-Type': 'application/json'},
+                body={'message': str(e)}
+            )
 
     def get_exchange_rate_by_pair(self, request: HttpRequest) -> HttpResponse:
         try:
             if not request.query:
-                raise AttributeError('Query params are missing')
+                return HttpResponse(
+                    400,
+                    headers={'Content-Type': 'application/json'},
+                    body={'message': 'Query params are missing'}
+                )
 
             pair = request.query['pair']
             if not pair:
-                raise AttributeError('Query param is missing: pair')
-
-            if not isinstance(pair, str):
-                raise TypeError('Pair is not a `str` type')
+                return HttpResponse(
+                    400,
+                    headers={'Content-Type': 'application/json'},
+                    body={'message': 'Query param is missing: pair'}
+                )
 
             if len(pair) != 6:
                 raise ValueError(
@@ -80,9 +104,6 @@ class HttpExchangeRateController:
                 )
             )
 
-            if exchange_rate_dto is None:
-                raise ValueError()
-
             body = asdict(exchange_rate_dto)
 
             response = HttpResponse(
@@ -91,8 +112,24 @@ class HttpExchangeRateController:
                 body
             )
             return response
-        except Exception:
-            raise
+        except ExchangeRateNotFound as e:
+            return HttpResponse(
+                404,
+                headers={'Content-Type': 'application/json'},
+                body={'message': str(e)}
+            )
+        except (NegativeAmount, ExchangeRateException, CurrencyEquality, CurrencyCodeEquality, ExchangeRateTypeMismatch) as e:
+            return HttpResponse(
+                400,
+                headers={'Content-Type': 'application/json'},
+                body={'message': str(e)}
+            )
+        except Exception as e:
+            return HttpResponse(
+                status_code=500,
+                headers={'Content-Type': 'application/json'},
+                body={'message': str(e)}
+            )
 
     def get_all_rates(self, _: HttpRequest | None = None) -> HttpResponse:
         try:
@@ -106,5 +143,15 @@ class HttpExchangeRateController:
                 body
             )
             return response
-        except Exception:
-            raise
+        except (NegativeAmount, ExchangeRateException, CurrencyEquality, CurrencyCodeEquality, ExchangeRateTypeMismatch) as e:
+            return HttpResponse(
+                400,
+                headers={'Content-Type': 'application/json'},
+                body={'message': str(e)}
+            )
+        except Exception as e:
+            return HttpResponse(
+                status_code=500,
+                headers={'Content-Type': 'application/json'},
+                body={'message': str(e)}
+            )

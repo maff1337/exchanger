@@ -1,9 +1,7 @@
 from dataclasses import dataclass
-from typing import Protocol
 
+from exchanger.exceptions import CurrencyTypeMismatch
 
-# class ToDict(Protocol):
-#     def to_dict(self, )
 
 @dataclass
 class CurrencyDto:
@@ -14,19 +12,19 @@ class CurrencyDto:
 
     def __post_init__(self) -> None:
         if not isinstance(self.id, int):
-            raise TypeError(
+            raise CurrencyTypeMismatch(
                 f'Id must be `int` type. Id type - {type(self.id)}')
 
         if not isinstance(self.code, str):
-            raise TypeError(
+            raise CurrencyTypeMismatch(
                 f'Code must be `str` type. Code type - {type(self.code)}')
 
         if not isinstance(self.name, str):
-            raise TypeError(
+            raise CurrencyTypeMismatch(
                 f'Name must be `str` type. Name type - {type(self.name)}')
 
         if not isinstance(self.code, str):
-            raise TypeError(
+            raise CurrencyTypeMismatch(
                 f'Sign must be `str` type. Sign type - {type(self.sign)}')
 
         object.__setattr__(self, 'code', self.code.strip())
@@ -42,15 +40,15 @@ class CreateCurrencyDto:
 
     def __post_init__(self) -> None:
         if not isinstance(self.code, str):
-            raise TypeError(
+            raise CurrencyTypeMismatch(
                 f'Code must be `str` type. Code type - {type(self.code)}')
 
         if not isinstance(self.name, str):
-            raise TypeError(
+            raise CurrencyTypeMismatch(
                 f'Name must be `str` type. Code type - {type(self.name)}')
 
         if not isinstance(self.code, str):
-            raise TypeError(
+            raise CurrencyTypeMismatch(
                 f'Sign must be `str` type. Code type - {type(self.sign)}')
 
         object.__setattr__(self, 'code', self.code.strip())
@@ -64,7 +62,7 @@ class CurrencyCodeDto:
 
     def __post_init__(self) -> None:
         if not isinstance(self.value, str):
-            raise TypeError(
+            raise CurrencyTypeMismatch(
                 f'Code must be `str` type. Code type - {type(self.value)}')
 
         object.__setattr__(self, 'code', self.value.strip())

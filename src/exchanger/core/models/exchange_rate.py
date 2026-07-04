@@ -2,6 +2,7 @@ from decimal import Decimal
 from dataclasses import dataclass, field
 
 from exchanger.core.models.currency import Currency
+from exchanger.exceptions import CurrencyEquality, NegativeAmount
 
 
 @dataclass(frozen=True)
@@ -12,11 +13,9 @@ class ExchangeRate:
     id: int | None = field(default=None)
 
     def __post_init__(self) -> None:
-        if not (isinstance(self.base, Currency) and isinstance(self.target, Currency)):
-            raise TypeError('Base and Target must be `Currency` type')
-
-        if not isinstance(self.rate, Decimal):
-            raise TypeError('Rate must be `Decimal` type')
-
         if self.base == self.target:
-            raise ValueError('Base and Target currencies cannot be equals')
+            raise CurrencyEquality(
+                'Base and Target currencies cannot be equals')
+
+        if self.rate < 0:
+            raise NegativeAmount('Exchange rate cannot be negative')

@@ -1,6 +1,7 @@
 from decimal import Decimal
 from dataclasses import dataclass
 
+from exchanger.exceptions import NegativeAmount
 from exchanger.core.models.currency import Currency
 from exchanger.core.vo.exchange_pair import ExchangePair
 
@@ -12,7 +13,7 @@ class RequestConversion:
 
     def __post_init__(self) -> None:
         if self.amount < Decimal(0):
-            raise ValueError(
+            raise NegativeAmount(
                 f'Amount cannot be negative. Amount - {self.amount}')
 
 

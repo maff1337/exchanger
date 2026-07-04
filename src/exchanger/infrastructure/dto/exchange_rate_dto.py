@@ -1,6 +1,7 @@
 from decimal import Decimal
 from dataclasses import dataclass
 
+from exchanger.exceptions import ExchangeRateTypeMismatch
 from exchanger.infrastructure.dto.currency_dto import CurrencyDto
 
 
@@ -12,13 +13,15 @@ class CreateExchangeRateDto:
 
     def __post_init__(self) -> None:
         if not isinstance(self.base_currency_dto, CurrencyDto):
-            raise TypeError('Base_currency_dto must be `CurrencyDto` type')
+            raise ExchangeRateTypeMismatch(
+                'Base_currency_dto must be `CurrencyDto` type')
 
         if not isinstance(self.target_currency_dto, CurrencyDto):
-            raise TypeError('Target_currency_dto must be `CurrencyDto` type')
+            raise ExchangeRateTypeMismatch(
+                'Target_currency_dto must be `CurrencyDto` type')
 
         if not isinstance(self.rate, Decimal):
-            raise TypeError(
+            raise ExchangeRateTypeMismatch(
                 f'Rate must be `Decimal` type. Rate type - {type(self.rate)}')
 
 
@@ -31,17 +34,19 @@ class ExchangeRateDto:
 
     def __post_init__(self) -> None:
         if not isinstance(self.id, int):
-            raise TypeError(
+            raise ExchangeRateTypeMismatch(
                 f'Id must be `int` type. Id type - {type(self.id)}')
 
         if not isinstance(self.base_currency_dto, CurrencyDto):
-            raise TypeError('Base_currency_dto must be `CurrencyDto` type')
+            raise ExchangeRateTypeMismatch(
+                'Base_currency_dto must be `CurrencyDto` type')
 
         if not isinstance(self.target_currency_dto, CurrencyDto):
-            raise TypeError('Target_currency_dto must be `CurrencyDto` type')
+            raise ExchangeRateTypeMismatch(
+                'Target_currency_dto must be `CurrencyDto` type')
 
         if not isinstance(self.rate, Decimal):
-            raise TypeError(
+            raise ExchangeRateTypeMismatch(
                 f'Rate must be `Decimal` type. Rate type - {type(self.rate)}')
 
 
@@ -52,9 +57,9 @@ class ExchangePairDto:
 
     def __post_init__(self) -> None:
         if not isinstance(self.base_code, str):
-            raise TypeError(
+            raise ExchangeRateTypeMismatch(
                 f'Base_code must be `str` type. Id type - {type(self.base_code)}')
 
         if not isinstance(self.target_code, str):
-            raise TypeError(
+            raise ExchangeRateTypeMismatch(
                 f'Target_code must be `str` type. Id type - {type(self.target_code)}')

@@ -1,11 +1,11 @@
 from decimal import Decimal
 
-from exchanger.application.services.services_protocols import ConversionServiceProtocol
-from exchanger.core.models.conversion import RequestConversion, ResponseConversion
-from exchanger.core.models.exchange_rate import ExchangeRate
-from exchanger.core.repositories.exchange_rate_repository import ExchangeRateRepository
 from exchanger.core.vo.currency_code import Code
+from exchanger.exceptions import ExchangeRateNotFound
 from exchanger.core.vo.exchange_pair import ExchangePair
+from exchanger.core.models.conversion import RequestConversion, ResponseConversion
+from exchanger.application.services.services_protocols import ConversionServiceProtocol
+from exchanger.core.repositories.exchange_rate_repository import ExchangeRateRepository
 
 
 class ConversionService(ConversionServiceProtocol):
@@ -30,7 +30,8 @@ class ConversionService(ConversionServiceProtocol):
 
             if exchange_rate is None:
                 if base_code == usd_code or target_code == usd_code:
-                    raise ValueError('No Exchange Pair')
+                    raise ExchangeRateNotFound(
+                        f'Exchange rate for {base_code.value}-{target_code.value} not found')
 
                 new_base_pair = ExchangePair(base_code, usd_code)
                 new_target_pair = ExchangePair(target_code, usd_code)
@@ -43,7 +44,8 @@ class ConversionService(ConversionServiceProtocol):
                 )
 
                 if base_usd is None or target_usd is None:
-                    raise ValueError('No Exchange Pair')
+                    raise ExchangeRateNotFound(
+                        f'Exchange rate for {base_code.value}-{target_code.value} not found')
                 else:
                     base_currency = base_usd.base
                     target_currency = target_usd.base

@@ -1,11 +1,11 @@
-from sqlite3 import IntegrityError
 from typing import Sequence
+from sqlite3 import IntegrityError
 
-from exchanger.core.models.exchange_rate import ExchangeRate
-from exchanger.core.repositories.exchange_rate_repository import ExchangeRateRepository
 from exchanger.core.vo.exchange_pair import ExchangePair
-from exchanger.exceptions import ExchangeRateException
+from exchanger.core.models.exchange_rate import ExchangeRate
 from exchanger.infrastructure.data_mappers.data_mappers import ExchangeRateDataMapper
+from exchanger.core.repositories.exchange_rate_repository import ExchangeRateRepository
+from exchanger.exceptions import ExchangeRateAlreadyExists, ExchangeRateException, ExchangeRateNotFound
 
 
 class SqliteExchangeRateRepository(ExchangeRateRepository):
@@ -18,16 +18,18 @@ class SqliteExchangeRateRepository(ExchangeRateRepository):
 
             return id
         except IntegrityError as e:
-            raise ExchangeRateException(e)
+            raise ExchangeRateAlreadyExists(
+                f'Exchange rate {exchange_rate.base.code.value}-{exchange_rate.target.code.value} already exists')
 
-    def find_by_pair(self, exchange_pair: ExchangePair) -> ExchangeRate | None:
+    def find_by_pair(self, exchange_pair: ExchangePair) -> ExchangeRate:
         try:
             exchange_rate = self._db_exchange_rate_mapper.get_by_pair(
                 exchange_pair)
 
             return exchange_rate
-        except IntegrityError as e:
-            raise ExchangeRateException(e)
+        except IntegrityError:
+            raise ExchangeRateNotFound(
+                f'Exchange rate {exchange_pair.base_code.value}-{exchange_pair.target_code.value} not found')
 
     def find_all(self) -> Sequence[ExchangeRate]:
         try:
