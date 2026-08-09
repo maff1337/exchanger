@@ -1,10 +1,10 @@
-from typing import Sequence
+from collections.abc import Sequence
 from sqlite3 import Connection, IntegrityError
 
-from exchanger.core.vo.currency_code import Code
 from exchanger.core.models.currency import Currency
-from exchanger.infrastructure.database.shared import sqlite_cursor
+from exchanger.core.vo.currency_code import Code
 from exchanger.infrastructure.data_mappers.data_mappers import CurrencyDataMapper
+from exchanger.infrastructure.database.shared import sqlite_cursor
 
 
 class SqliteCurrencyDataMapper(CurrencyDataMapper):

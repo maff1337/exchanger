@@ -1,5 +1,5 @@
-from re import fullmatch
 from dataclasses import dataclass
+from re import fullmatch
 
 from exchanger.exceptions import CurrencyCodeValue
 

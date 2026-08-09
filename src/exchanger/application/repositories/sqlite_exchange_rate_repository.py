@@ -1,11 +1,15 @@
-from typing import Sequence
+from collections.abc import Sequence
 from sqlite3 import IntegrityError
 
-from exchanger.core.vo.exchange_pair import ExchangePair
 from exchanger.core.models.exchange_rate import ExchangeRate
-from exchanger.infrastructure.data_mappers.data_mappers import ExchangeRateDataMapper
 from exchanger.core.repositories.exchange_rate_repository import ExchangeRateRepository
-from exchanger.exceptions import ExchangeRateAlreadyExists, ExchangeRateException, ExchangeRateNotFound
+from exchanger.core.vo.exchange_pair import ExchangePair
+from exchanger.exceptions import (
+    ExchangeRateAlreadyExists,
+    ExchangeRateException,
+    ExchangeRateNotFound,
+)
+from exchanger.infrastructure.data_mappers.data_mappers import ExchangeRateDataMapper
 
 
 class SqliteExchangeRateRepository(ExchangeRateRepository):
@@ -17,7 +21,7 @@ class SqliteExchangeRateRepository(ExchangeRateRepository):
             id = self._db_exchange_rate_mapper.insert(exchange_rate)
 
             return id
-        except IntegrityError as e:
+        except IntegrityError:
             raise ExchangeRateAlreadyExists(
                 f'Exchange rate {exchange_rate.base.code.value}-{exchange_rate.target.code.value} already exists')
 

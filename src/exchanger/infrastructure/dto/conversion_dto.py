@@ -1,6 +1,6 @@
-from re import compile
-from decimal import Decimal
 from dataclasses import dataclass
+from decimal import Decimal
+from re import compile
 
 from exchanger.exceptions import ConversionException
 from exchanger.infrastructure.dto.currency_dto import CurrencyDto

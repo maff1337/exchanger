@@ -1,5 +1,5 @@
-from decimal import Decimal
 from dataclasses import dataclass, field
+from decimal import Decimal
 
 from exchanger.core.models.currency import Currency
 from exchanger.exceptions import CurrencyEquality, NegativeAmount

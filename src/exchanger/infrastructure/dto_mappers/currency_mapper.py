@@ -1,6 +1,10 @@
-from exchanger.core.vo.currency_code import Code
 from exchanger.core.models.currency import Currency
-from exchanger.infrastructure.dto.currency_dto import CreateCurrencyDto, CurrencyCodeDto, CurrencyDto
+from exchanger.core.vo.currency_code import Code
+from exchanger.infrastructure.dto.currency_dto import (
+    CreateCurrencyDto,
+    CurrencyCodeDto,
+    CurrencyDto,
+)
 
 
 class CurrencyDtoMapper:

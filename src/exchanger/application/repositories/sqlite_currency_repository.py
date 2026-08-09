@@ -1,11 +1,15 @@
-from typing import Sequence
+from collections.abc import Sequence
 from sqlite3 import IntegrityError
 
-from exchanger.core.vo.currency_code import Code
 from exchanger.core.models.currency import Currency
 from exchanger.core.repositories.currency_repository import CurrencyRepository
+from exchanger.core.vo.currency_code import Code
+from exchanger.exceptions import (
+    CurrencyAlreadyExists,
+    CurrencyException,
+    CurrencyNotFound,
+)
 from exchanger.infrastructure.data_mappers.data_mappers import CurrencyDataMapper
-from exchanger.exceptions import CurrencyAlreadyExists, CurrencyException, CurrencyNotFound
 
 
 class SqliteCurrencyRepository(CurrencyRepository):

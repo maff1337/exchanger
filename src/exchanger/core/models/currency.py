@@ -1,8 +1,8 @@
-from re import fullmatch
 from dataclasses import dataclass, field
+from re import fullmatch
 
-from exchanger.exceptions import CurrencyValue
 from exchanger.core.vo.currency_code import Code
+from exchanger.exceptions import CurrencyValue
 
 
 @dataclass(frozen=True)

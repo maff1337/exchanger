@@ -1,8 +1,9 @@
 from abc import abstractmethod
-from typing import Protocol, Sequence
+from collections.abc import Sequence
+from typing import Protocol
 
-from exchanger.core.vo.exchange_pair import ExchangePair
 from exchanger.core.models.exchange_rate import ExchangeRate
+from exchanger.core.vo.exchange_pair import ExchangePair
 
 
 class ExchangeRateRepository(Protocol):

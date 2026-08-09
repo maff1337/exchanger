@@ -1,8 +1,9 @@
 from abc import abstractmethod
-from typing import Protocol, Sequence
+from collections.abc import Sequence
+from typing import Protocol
 
-from exchanger.core.vo.currency_code import Code
 from exchanger.core.models.currency import Currency
+from exchanger.core.vo.currency_code import Code
 
 
 class CurrencyRepository(Protocol):

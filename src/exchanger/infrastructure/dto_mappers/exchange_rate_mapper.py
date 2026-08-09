@@ -1,8 +1,12 @@
+from exchanger.core.models.exchange_rate import ExchangeRate
 from exchanger.core.vo.currency_code import Code
 from exchanger.core.vo.exchange_pair import ExchangePair
-from exchanger.core.models.exchange_rate import ExchangeRate
+from exchanger.infrastructure.dto.exchange_rate_dto import (
+    CreateExchangeRateDto,
+    ExchangePairDto,
+    ExchangeRateDto,
+)
 from exchanger.infrastructure.dto_mappers.currency_mapper import CurrencyDtoMapper
-from exchanger.infrastructure.dto.exchange_rate_dto import CreateExchangeRateDto, ExchangePairDto, ExchangeRateDto
 
 
 class ExchangeRateDtoMapper:

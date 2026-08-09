@@ -1,9 +1,9 @@
-from typing import Sequence
+from collections.abc import Sequence
 
-from exchanger.core.vo.currency_code import Code
+from exchanger.application.services.services_protocols import CurrencyServiceProtocol
 from exchanger.core.models.currency import Currency
 from exchanger.core.repositories.currency_repository import CurrencyRepository
-from exchanger.application.services.services_protocols import CurrencyServiceProtocol
+from exchanger.core.vo.currency_code import Code
 
 
 class CurrencyService(CurrencyServiceProtocol):

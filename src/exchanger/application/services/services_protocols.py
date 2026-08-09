@@ -1,11 +1,12 @@
 from abc import abstractmethod
-from typing import Protocol, Sequence
+from collections.abc import Sequence
+from typing import Protocol
 
-from exchanger.core.vo.currency_code import Code
-from exchanger.core.models.currency import Currency
-from exchanger.core.vo.exchange_pair import ExchangePair
-from exchanger.core.models.exchange_rate import ExchangeRate
 from exchanger.core.models.conversion import RequestConversion, ResponseConversion
+from exchanger.core.models.currency import Currency
+from exchanger.core.models.exchange_rate import ExchangeRate
+from exchanger.core.vo.currency_code import Code
+from exchanger.core.vo.exchange_pair import ExchangePair
 
 
 class CurrencyServiceProtocol(Protocol):
