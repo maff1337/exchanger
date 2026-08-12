@@ -38,7 +38,7 @@ class SqliteExchangeRateDataMapper(ExchangeRateDataMapper):
     def insert(self, exchange_rate: ExchangeRate) -> int:
         with sqlite_cursor(self._conn) as cursor:
 
-            query = 'INSERT INTO  exchange_rate (base, target, rate) VALUES (?, ?, ?) RETURNING id'
+            query = 'INSERT INTO  exchange_rate (base_currency_id, target_currency_id, rate) VALUES (?, ?, ?) RETURNING id'
 
             row = cursor.execute(query, (exchange_rate.base.id,
                                          exchange_rate.target.id, str(exchange_rate.rate))).fetchone()
@@ -50,18 +50,18 @@ class SqliteExchangeRateDataMapper(ExchangeRateDataMapper):
 
             query = '''SELECT er.id as id,
                                 c1.code as base_code,
-                                c1.name as base_name,
+                                c1.full_name as base_name,
                                 c1.sign as base_sign,
                                 c1.id as base_id,
                                 
                                 c2.code AS target_code,
-                                c2.name AS target_name,
+                                c2.full_name AS target_name,
                                 c2.sign AS target_sign,
                                 c2.id AS target_id,
                                 er.rate as rate
             FROM exchange_rate AS er
-            INNER JOIN currency AS c1 ON c1.id = er.base
-            INNER JOIN currency AS c2 ON c2.id = er.target
+            INNER JOIN currency AS c1 ON c1.id = er.base_currency_id
+            INNER JOIN currency AS c2 ON c2.id = er.target_currency_id
             WHERE c1.code = ?
             AND c2.code = ?
             '''
@@ -81,18 +81,18 @@ class SqliteExchangeRateDataMapper(ExchangeRateDataMapper):
 
             query = '''SELECT er.id as id,
                                 c1.code as base_code,
-                                c1.name as base_name,
+                                c1.full_name as base_name,
                                 c1.sign as base_sign,
                                 c1.id as base_id,
                                 
                                 c2.code AS target_code,
-                                c2.name AS target_name,
+                                c2.full_name AS target_name,
                                 c2.sign AS target_sign,
                                 c2.id AS target_id,
                                 er.rate as rate
             FROM exchange_rate AS er
-            INNER JOIN currency AS c1 ON c1.id = er.base
-            INNER JOIN currency AS c2 ON c2.id = er.target
+            INNER JOIN currency AS c1 ON c1.id = er.base_currency_id
+            INNER JOIN currency AS c2 ON c2.id = er.target_currency_id
             '''
 
             rows = cursor.execute(query).fetchall()

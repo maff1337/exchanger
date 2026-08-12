@@ -14,14 +14,14 @@ class SqliteCurrencyDataMapper(CurrencyDataMapper):
     def _row_to_domain(self, row) -> Currency:
         return Currency(
             code=Code(row['code']),
-            name=row['name'],
+            name=row['full_name'],
             sign=row['sign'],
             id=row['id']
         )
 
     def insert(self, currency: Currency) -> int:
         with sqlite_cursor(self._conn) as cursor:
-            query = 'INSERT INTO currency (code, name, sign) VALUES (?, ?, ?) RETURNING id'
+            query = 'INSERT INTO currency (code, full_name, sign) VALUES (?, ?, ?) RETURNING id'
 
             row = cursor.execute(
                 query,
