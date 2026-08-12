@@ -30,23 +30,23 @@ class HttpConversionController:
 
     def convert(self, request: HttpRequest) -> HttpResponse:
         try:
-            if not request.path_params:
+            if not request.query:
                 return HttpResponse(
                     400,
                     headers={'Content-Type': 'application/json'},
-                    body={'message': 'Path parameters are missing'}
+                    body={'message': 'Query are missing'}
                 )
 
-            if not isinstance(request.path_params, dict):
+            if not isinstance(request.query, dict):
                 return HttpResponse(
                     400,
                     headers={'Content-Type': 'application/json'},
                     body={'message': 'JSON structure expected'}
                 )
 
-            from_curr = request.path_params.get('from')
-            to_curr = request.path_params.get('to')
-            amount = request.path_params.get('amount')
+            from_curr = request.query.get('from')
+            to_curr = request.query.get('to')
+            amount = request.query.get('amount')
 
             if not from_curr:
                 raise ConversionException('Query param is missing: from')
@@ -65,13 +65,16 @@ class HttpConversionController:
                 amount=amount
             )
 
-            response_conversion = self._conversion_service.convert(
-                request_conversion=self._conversion_dto_mapepr.request_dto_to_domain(
-                    request_conversion_dto
+            response_conversion = self._conversion_dto_mapepr.domain_to_response_dto(
+                self._conversion_service.convert(
+                    request_conversion=self._conversion_dto_mapepr.request_dto_to_domain(
+                        request_conversion_dto
+                    )
                 )
             )
 
-            body = asdict(response_conversion)
+            body = response_conversion.as_dict()
+            
             response = HttpResponse(
                 status_code=200,
                 headers={'Content-Type': 'application/json'},

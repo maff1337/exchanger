@@ -110,11 +110,13 @@ class HttpCurrencyController:
 
             code_dto = CurrencyCodeDto(code)
 
-            currency_dto = self._currency_service.find_by_code(
-                code=self._currency_dto_mapper.code_dto_to_domain(code_dto)
+            currency_dto = self._currency_dto_mapper.domain_to_dto(
+                    self._currency_service.find_by_code(
+                    code=self._currency_dto_mapper.code_dto_to_domain(code_dto)
+                )
             )
 
-            body = asdict(currency_dto)
+            body = currency_dto.as_dict()
 
             response = HttpResponse(
                 200,
@@ -144,8 +146,9 @@ class HttpCurrencyController:
     def get_all_currencies(self, request: HttpRequest) -> HttpResponse:
         try:
             currencies = self._currency_service.find_all()
+            currencies = [self._currency_dto_mapper.domain_to_dto(currency) for currency in currencies]
 
-            body = list(currencies)
+            body = [currency.as_dict() for currency in currencies]
 
             response = HttpResponse(
                 200,

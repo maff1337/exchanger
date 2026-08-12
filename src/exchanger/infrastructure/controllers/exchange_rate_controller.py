@@ -169,13 +169,15 @@ class HttpExchangeRateController:
 
             exchange_pair_dto = ExchangePairDto(pair[:3], pair[3:])
 
-            exchange_rate_dto = self._er_service.find_by_pair(
+            exchange_rate_dto = self._er_dto_mapper.domain_to_dto(
+                self._er_service.find_by_pair(
                 exchange_pair=self._er_dto_mapper.pair_dto_to_domain(
                     exchange_pair_dto
                 )
             )
+            )
 
-            body = asdict(exchange_rate_dto)
+            body = exchange_rate_dto.as_dict()
 
             response = HttpResponse(
                 200,
@@ -205,8 +207,9 @@ class HttpExchangeRateController:
     def get_all_rates(self, _: HttpRequest | None = None) -> HttpResponse:
         try:
             rates = self._er_service.find_all()
+            rates = [self._er_dto_mapper.domain_to_dto(rate) for rate in rates]
 
-            body = list(rates)
+            body = [rate.as_dict() for rate in rates]
 
             response = HttpResponse(
                 200,
