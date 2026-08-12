@@ -122,7 +122,7 @@ class HttpExchangeRateController:
             body = {'id': id}
 
             response = HttpResponse(
-                204,
+                201,
                 {'Content-Type': 'application/json'},
                 body
             )
@@ -148,19 +148,19 @@ class HttpExchangeRateController:
 
     def get_exchange_rate_by_pair(self, request: HttpRequest) -> HttpResponse:
         try:
-            if not request.query:
+            if not request.path_params:
                 return HttpResponse(
                     400,
                     headers={'Content-Type': 'application/json'},
-                    body={'message': 'Query params are missing'}
+                    body={'message': 'Path params params are missing'}
                 )
 
-            pair = request.query.get('pair')
+            pair = request.path_params.get('pair')
             if not pair:
                 return HttpResponse(
                     400,
                     headers={'Content-Type': 'application/json'},
-                    body={'message': 'Query param is missing: pair'}
+                    body={'message': 'Path params param is missing: pair'}
                 )
 
             if len(pair) != 6:

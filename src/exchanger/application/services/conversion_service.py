@@ -17,16 +17,22 @@ class ConversionService(ConversionServiceProtocol):
         target_code = request_conversion.exchange_pair.target_code
         usd_code = Code('usd')
 
-        exchange_rate = self._exchange_rate_repo.find_by_pair(
-            request_conversion.exchange_pair
-        )
+        try:
+            exchange_rate = self._exchange_rate_repo.find_by_pair(
+                request_conversion.exchange_pair
+            )
+        except ExchangeRateNotFound:
+            exchange_rate = None
 
         if exchange_rate is None:
             new_base_code, new_target_code = target_code, base_code
 
-            exchange_rate = self._exchange_rate_repo.find_by_pair(
-                ExchangePair(new_base_code, new_target_code)
-            )
+            try:
+                exchange_rate = self._exchange_rate_repo.find_by_pair(
+                    ExchangePair(new_base_code, new_target_code)
+                )
+            except ExchangeRateNotFound:
+                exchange_rate = None
 
             if exchange_rate is None:
                 if base_code == usd_code or target_code == usd_code:

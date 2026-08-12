@@ -66,7 +66,7 @@ class HttpCurrencyController:
             body = {'id': id}
 
             response = HttpResponse(
-                204, {'Content-Type': 'application/json'}, body)
+                201, {'Content-Type': 'application/json'}, body)
             return response
 
         except CurrencyAlreadyExists as e:
@@ -92,20 +92,20 @@ class HttpCurrencyController:
 
     def get_currency_by_code(self, request: HttpRequest) -> HttpResponse:
         try:
-            if not request.query:
+            if not request.path_params:
                 return HttpResponse(
                     400,
                     headers={'Content-Type': 'application/json'},
-                    body={'message': 'Query params are missing'}
+                    body={'message': 'Path params params are missing'}
                 )
 
-            code = request.query.get('code')
+            code = request.path_params.get('code')
 
             if not code:
                 return HttpResponse(
                     400,
                     headers={'Content-Type': 'application/json'},
-                    body={'message': 'Query param is missing: code'}
+                    body={'message': 'Path params param is missing: code'}
                 )
 
             code_dto = CurrencyCodeDto(code)
