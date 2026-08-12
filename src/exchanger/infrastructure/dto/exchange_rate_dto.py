@@ -17,11 +17,11 @@ class CreateExchangeRateDto:
         decimal_pattern = compile(r'^\d+(\.\d+)?$')
         if not isinstance(self.base_currency_dto, CurrencyDto):
             raise ExchangeRateTypeMismatch(
-                'Base_currency_dto must be `CurrencyDto` type')
+                'Base currency DTO must be `CurrencyDto` type')
 
         if not isinstance(self.target_currency_dto, CurrencyDto):
             raise ExchangeRateTypeMismatch(
-                'Target_currency_dto must be `CurrencyDto` type')
+                'Target currency DTO must be `CurrencyDto` type')
 
         if not isinstance(self.rate, (Decimal, str)):
             raise ExchangeRateTypeMismatch(
@@ -47,11 +47,11 @@ class ExchangeRateDto:
 
         if not isinstance(self.base, CurrencyDto):
             raise ExchangeRateTypeMismatch(
-                'Base_currency_dto must be `CurrencyDto` type')
+                'Base currency DTO must be `CurrencyDto` type')
 
         if not isinstance(self.target, CurrencyDto):
             raise ExchangeRateTypeMismatch(
-                'Target_currency_dto must be `CurrencyDto` type')
+                'Target currency DTO must be `CurrencyDto` type')
 
         if not isinstance(self.rate, (Decimal, str, float)):
             raise ExchangeRateTypeMismatch(
@@ -74,11 +74,11 @@ class ExchangePairDto:
     def __post_init__(self) -> None:
         if not isinstance(self.base_code, str):
             raise ExchangeRateTypeMismatch(
-                f'Base_code must be `str` type. Id type - {type(self.base_code)}')
+                f'Base code must be `str` type. Code type - {type(self.base_code)}')
 
         if not isinstance(self.target_code, str):
             raise ExchangeRateTypeMismatch(
-                f'Target_code must be `str` type. Id type - {type(self.target_code)}')
+                f'Target code must be `str` type. Code type - {type(self.target_code)}')
 
         self.base_code = self.base_code.strip()
         self.target_code = self.target_code.strip()

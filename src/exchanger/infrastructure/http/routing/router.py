@@ -40,7 +40,7 @@ class Router:
         return HttpResponse(
             status_code=404,
             headers={'Content-Type': 'application/json'},
-            body={'error': 'Not Found'}
+            body={'error': 'URL Not Found'}
         )
     
     def _match_path(
