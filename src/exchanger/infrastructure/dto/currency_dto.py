@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Any
 
 from exchanger.exceptions import CurrencyTypeMismatch
 
@@ -30,6 +31,14 @@ class CurrencyDto:
         object.__setattr__(self, 'code', self.code.strip())
         object.__setattr__(self, 'name', self.name.strip())
         object.__setattr__(self, 'sign', self.sign.strip())
+    
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            'id': self.id,
+            'code': self.code,
+            'fullName': self.name,
+            'sign': self.sign
+        }
 
 
 @dataclass

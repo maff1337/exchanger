@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from decimal import Decimal
 from re import compile
+from typing import Any
 
 from exchanger.exceptions import ConversionException
 from exchanger.infrastructure.dto.currency_dto import CurrencyDto
@@ -27,6 +28,15 @@ class RequestConversionDto:
 class ResponseConversionDto:
     base: CurrencyDto
     target: CurrencyDto
-    rate: Decimal
-    amount: Decimal
-    converted_amount: Decimal
+    rate: str
+    amount: str
+    converted: str
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            'baseCurrency': self.base.as_dict(),
+            'targetCurrency': self.target.as_dict(),
+            'rate': float(self.rate),
+            'amount': float(self.amount),
+            'convertedAmount': float(self.converted)
+        }

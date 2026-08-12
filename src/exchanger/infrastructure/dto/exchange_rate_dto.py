@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from decimal import Decimal
 from re import compile
+from typing import Any
 
 from exchanger.exceptions import ExchangeRateException, ExchangeRateTypeMismatch
 from exchanger.infrastructure.dto.currency_dto import CurrencyDto
@@ -35,26 +36,34 @@ class CreateExchangeRateDto:
 @dataclass
 class ExchangeRateDto:
     id: int
-    base_currency_dto: CurrencyDto
-    target_currency_dto: CurrencyDto
-    rate: Decimal
+    base: CurrencyDto
+    target: CurrencyDto
+    rate: str
 
     def __post_init__(self) -> None:
         if not isinstance(self.id, int):
             raise ExchangeRateTypeMismatch(
                 f'Id must be `int` type. Id type - {type(self.id)}')
 
-        if not isinstance(self.base_currency_dto, CurrencyDto):
+        if not isinstance(self.base, CurrencyDto):
             raise ExchangeRateTypeMismatch(
                 'Base_currency_dto must be `CurrencyDto` type')
 
-        if not isinstance(self.target_currency_dto, CurrencyDto):
+        if not isinstance(self.target, CurrencyDto):
             raise ExchangeRateTypeMismatch(
                 'Target_currency_dto must be `CurrencyDto` type')
 
-        if not isinstance(self.rate, Decimal):
+        if not isinstance(self.rate, (Decimal, str, float)):
             raise ExchangeRateTypeMismatch(
                 f'Rate must be `Decimal` type. Rate type - {type(self.rate)}')
+    
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            'id': self.id,
+            'baseCurrency': self.base.as_dict(),
+            'targetCurrency': self.target.as_dict(),
+            'rate': float(self.rate)
+        }
 
 
 @dataclass
