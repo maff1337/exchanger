@@ -39,7 +39,7 @@ class ConversionDtoMapper:
         return ResponseConversionDto(
             base=base_currency_dto,
             target=target_currency_dto,
-            rate=domain.rate,
-            amount=domain.amount,
-            converted_amount=domain.converted_amount
+            rate=str(domain.rate),
+            amount=str(domain.amount),
+            converted=str(domain.converted_amount)
         )

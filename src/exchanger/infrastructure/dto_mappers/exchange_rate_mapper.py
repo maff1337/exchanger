@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from exchanger.core.models.exchange_rate import ExchangeRate
 from exchanger.core.vo.currency_code import Code
 from exchanger.core.vo.exchange_pair import ExchangePair
@@ -29,16 +31,16 @@ class ExchangeRateDtoMapper:
 
     def dto_to_domain(self, dto: ExchangeRateDto) -> ExchangeRate:
         base_currency = self._currency_mapper.dto_to_domain(
-            dto.base_currency_dto
+            dto.base
         )
         target_currency = self._currency_mapper.dto_to_domain(
-            dto.target_currency_dto
+            dto.target
         )
 
         return ExchangeRate(
             base=base_currency,
             target=target_currency,
-            rate=dto.rate,
+            rate=Decimal(dto.rate),
             id=dto.id
         )
 
@@ -55,9 +57,9 @@ class ExchangeRateDtoMapper:
 
         return ExchangeRateDto(
             id=domain.id,
-            base_currency_dto=base_currency_dto,
-            target_currency_dto=target_currency_dto,
-            rate=domain.rate
+            base=base_currency_dto,
+            target=target_currency_dto,
+            rate=str(domain.rate)
         )
 
     def pair_dto_to_domain(self, pair_dto: ExchangePairDto) -> ExchangePair:
