@@ -103,17 +103,13 @@ class SqliteExchangeRateDataMapper(ExchangeRateDataMapper):
         with sqlite_cursor(self._conn) as cursor:
             
             update_query = '''UPDATE exchange_rate AS er
-                SET rate = ?
-                FROM currency AS base
-                JOIN currency AS target
-                    ON target.id = er.target_currency_id
-                WHERE er.base_currency_id = base.id
-                AND base.code = ?
-                AND target.code = ?
+                    SET rate = ?
+                    WHERE base_currency_id = (SELECT id FROM currency WHERE code = ?)
+                    AND target_currency_id = (SELECT id FROM currency WHERE code = ?)
                 '''
 
-            cursor.execute(update_query, (exchange_rate.base_code.value,
-                                         exchange_rate.target_code.value, str(exchange_rate.rate))).fetchone()
+            cursor.execute(update_query, (str(exchange_rate.rate), exchange_rate.base_code.value,
+                                         exchange_rate.target_code.value))
 
             if cursor.rowcount != 1:
                 raise IntegrityError('Not Found')
