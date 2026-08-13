@@ -36,7 +36,7 @@ class CurrencyDto:
         return {
             'id': self.id,
             'code': self.code,
-            'fullName': self.name,
+            'name': self.name,
             'sign': self.sign
         }
 
