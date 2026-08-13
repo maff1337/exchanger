@@ -1,7 +1,13 @@
 from sqlite3 import Connection, Row
 
-from exchanger.infrastructure.database.initial_data import INIT_CURRENCY, INIT_EXCHANGE_RATE
-from exchanger.infrastructure.database.schema import CREATE_CURRENCY_TABLE, CREATE_EXCHANGE_RATE_TABLE
+from exchanger.infrastructure.database.initial_data import (
+    INIT_CURRENCY,
+    INIT_EXCHANGE_RATE,
+)
+from exchanger.infrastructure.database.schema import (
+    CREATE_CURRENCY_TABLE,
+    CREATE_EXCHANGE_RATE_TABLE,
+)
 from exchanger.infrastructure.database.shared import sqlite_cursor
 
 
