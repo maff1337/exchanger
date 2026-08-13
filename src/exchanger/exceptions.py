@@ -1,3 +1,7 @@
+class UnsupportedMediaType(Exception):
+    ...
+
+
 class CurrencyException(Exception):
     ...
 
