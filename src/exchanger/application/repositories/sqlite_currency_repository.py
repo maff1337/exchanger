@@ -1,4 +1,5 @@
 from collections.abc import Sequence
+from dataclasses import replace
 from sqlite3 import IntegrityError
 
 from exchanger.core.models.currency import Currency
@@ -20,9 +21,7 @@ class SqliteCurrencyRepository(CurrencyRepository):
         try:
             id = self._db_currency_mapper.insert(currency)
             
-            currency.id = id
-            
-            return currency
+            return replace(currency, id=id)
         except IntegrityError:
             raise CurrencyAlreadyExists(
                 f'Currency with code {currency.code.value} already exists')

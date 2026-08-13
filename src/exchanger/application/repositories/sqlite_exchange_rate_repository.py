@@ -1,4 +1,5 @@
 from collections.abc import Sequence
+from dataclasses import replace
 from sqlite3 import IntegrityError
 
 from exchanger.core.models.exchange_rate import ExchangeRate
@@ -19,10 +20,8 @@ class SqliteExchangeRateRepository(ExchangeRateRepository):
     def create(self, exchange_rate: ExchangeRate) -> ExchangeRate:
         try:
             id = self._db_exchange_rate_mapper.insert(exchange_rate)
-
-            exchange_rate.id = id
             
-            return exchange_rate
+            return replace(exchange_rate, id=id)
         except IntegrityError:
             raise ExchangeRateAlreadyExists(
                 f'Exchange rate {exchange_rate.base.code.value}-{exchange_rate.target.code.value} already exists')
