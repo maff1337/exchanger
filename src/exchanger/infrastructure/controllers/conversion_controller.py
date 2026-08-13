@@ -1,5 +1,3 @@
-from dataclasses import asdict
-
 from exchanger.application.services.conversion_service import ConversionService
 from exchanger.exceptions import (
     ConversionException,
@@ -31,18 +29,10 @@ class HttpConversionController:
     def convert(self, request: HttpRequest) -> HttpResponse:
         try:
             if not request.query:
-                return HttpResponse(
-                    400,
-                    headers={'Content-Type': 'application/json'},
-                    body={'message': 'Query are missing'}
-                )
+                raise ConversionException('Query params are missing')
 
             if not isinstance(request.query, dict):
-                return HttpResponse(
-                    400,
-                    headers={'Content-Type': 'application/json'},
-                    body={'message': 'JSON structure expected'}
-                )
+                raise ConversionException('JSON structure expected')
 
             from_curr = request.query.get('from')
             to_curr = request.query.get('to')

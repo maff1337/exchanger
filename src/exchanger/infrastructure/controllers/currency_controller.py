@@ -1,5 +1,3 @@
-from dataclasses import asdict
-
 from exchanger.application.services.services_protocols import CurrencyServiceProtocol
 from exchanger.exceptions import (
     CurrencyAlreadyExists,
@@ -25,20 +23,12 @@ class HttpCurrencyController:
     def create_currency(self, request: HttpRequest) -> HttpResponse:
         try:
             if not request.body:
-                return HttpResponse(
-                    400,
-                    headers={'Content-Type': 'application/json'},
-                    body={'message': 'Body is missing'}
-                )
+                raise CurrencyException('Body is missing')
 
             body = request.body
 
             if not isinstance(body, dict):
-                return HttpResponse(
-                    400,
-                    headers={'Content-Type': 'application/json'},
-                    body={'message': 'JSON structure expected'}
-                )
+                raise CurrencyException('JSON structure expected')
 
             code = body.get('code')
             name = body.get('name')
@@ -68,7 +58,10 @@ class HttpCurrencyController:
             body = currency_dto.as_dict()
 
             response = HttpResponse(
-                201, {'Content-Type': 'application/json'}, body)
+                status_code=201, 
+                headers={'Content-Type': 'application/json'}, 
+                body=body
+            )
             return response
 
         except CurrencyAlreadyExists as e:
@@ -80,7 +73,7 @@ class HttpCurrencyController:
             return response
         except (CurrencyException, CurrencyCodeValue, CurrencyValue) as e:
             return HttpResponse(
-                400,
+                status_code=400,
                 headers={'Content-Type': 'application/json'},
                 body={'message': str(e)}
             )
@@ -95,20 +88,13 @@ class HttpCurrencyController:
     def get_currency_by_code(self, request: HttpRequest) -> HttpResponse:
         try:
             if not request.path_params:
-                return HttpResponse(
-                    400,
-                    headers={'Content-Type': 'application/json'},
-                    body={'message': 'Path params params are missing'}
-                )
+                raise CurrencyException('Path params are missing')
+                
 
             code = request.path_params.get('code')
 
             if not code:
-                return HttpResponse(
-                    400,
-                    headers={'Content-Type': 'application/json'},
-                    body={'message': 'Path params param is missing: code'}
-                )
+                raise CurrencyException('Path param is  missing: code')
 
             code_dto = CurrencyCodeDto(code)
 
@@ -121,20 +107,20 @@ class HttpCurrencyController:
             body = currency_dto.as_dict()
 
             response = HttpResponse(
-                200,
-                {'Content-Type': 'application/json'},
-                body
+                status_code=200,
+                headers={'Content-Type': 'application/json'},
+                body=body
             )
             return response
         except CurrencyNotFound as e:
             return HttpResponse(
-                404,
+                status_code=404,
                 headers={'Content-Type': 'application/json'},
                 body={'message': str(e)}
             )
         except (CurrencyException, CurrencyCodeValue, CurrencyValue) as e:
             return HttpResponse(
-                400,
+                status_code=400,
                 headers={'Content-Type': 'application/json'},
                 body={'message': str(e)}
             )
@@ -153,14 +139,14 @@ class HttpCurrencyController:
             body = [currency.as_dict() for currency in currencies]
 
             response = HttpResponse(
-                200,
-                {'Content-Type': 'application/json'},
-                body
+                status_code=200,
+                headers={'Content-Type': 'application/json'},
+                body=body
             )
             return response
         except (CurrencyException, CurrencyCodeValue, CurrencyValue) as e:
             return HttpResponse(
-                400,
+                status_code=400,
                 headers={'Content-Type': 'application/json'},
                 body={'message': str(e)}
             )

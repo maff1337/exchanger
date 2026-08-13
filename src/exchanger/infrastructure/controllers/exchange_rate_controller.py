@@ -1,4 +1,3 @@
-from dataclasses import asdict
 
 from exchanger.application.services.services_protocols import (
     ExchangeRateServiceProtocol,
@@ -125,9 +124,9 @@ class HttpExchangeRateController:
             body = er_dto.as_dict()
 
             response = HttpResponse(
-                201,
-                {'Content-Type': 'application/json'},
-                body
+                status_code=201,
+                headers={'Content-Type': 'application/json'},
+                body=body
             )
             return response
         except ExchangeRateAlreadyExists as e:
@@ -138,7 +137,7 @@ class HttpExchangeRateController:
             )
         except (NegativeAmount, ExchangeRateException, CurrencyEquality, CurrencyCodeEquality, ExchangeRateTypeMismatch) as e:
             return HttpResponse(
-                400,
+                status_code=400,
                 headers={'Content-Type': 'application/json'},
                 body={'message': str(e)}
             )
@@ -152,19 +151,11 @@ class HttpExchangeRateController:
     def get_exchange_rate_by_pair(self, request: HttpRequest) -> HttpResponse:
         try:
             if not request.path_params:
-                return HttpResponse(
-                    400,
-                    headers={'Content-Type': 'application/json'},
-                    body={'message': 'Path params params are missing'}
-                )
+                raise ExchangeRateException('Path params are missing')
 
             pair = request.path_params.get('pair')
             if not pair:
-                return HttpResponse(
-                    400,
-                    headers={'Content-Type': 'application/json'},
-                    body={'message': 'Path params param is missing: pair'}
-                )
+                raise ExchangeRateException('Path param is missing: pair')
 
             if len(pair) != 6:
                 raise ExchangeRateException(
@@ -183,20 +174,20 @@ class HttpExchangeRateController:
             body = exchange_rate_dto.as_dict()
 
             response = HttpResponse(
-                200,
-                {'Content-Type': 'application/json'},
-                body
+                status_code=200,
+                headers={'Content-Type': 'application/json'},
+                body=body
             )
             return response
         except ExchangeRateNotFound as e:
             return HttpResponse(
-                404,
+                status_code=404,
                 headers={'Content-Type': 'application/json'},
                 body={'message': str(e)}
             )
         except (NegativeAmount, ExchangeRateException, CurrencyEquality, CurrencyCodeEquality, ExchangeRateTypeMismatch) as e:
             return HttpResponse(
-                400,
+                status_code=400,
                 headers={'Content-Type': 'application/json'},
                 body={'message': str(e)}
             )
@@ -215,14 +206,14 @@ class HttpExchangeRateController:
             body = [rate.as_dict() for rate in rates]
 
             response = HttpResponse(
-                200,
-                {'Content-Type': 'application/json'},
-                body
+                status_code=200,
+                headers={'Content-Type': 'application/json'},
+                body=body
             )
             return response
         except (NegativeAmount, ExchangeRateException, CurrencyEquality, CurrencyCodeEquality, ExchangeRateTypeMismatch) as e:
             return HttpResponse(
-                400,
+                status_code=400,
                 headers={'Content-Type': 'application/json'},
                 body={'message': str(e)}
             )

@@ -108,7 +108,7 @@ class UpdateExchangeRateDto:
         
         if not self._is_number(self.rate):
             raise ExchangeRateException(
-                f'Rate must be a valid number'
+                'Rate must be a valid number'
             )
     
     def _is_number(self, value: Any) -> bool:
