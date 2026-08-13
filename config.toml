@@ -1,0 +1,9 @@
+[server]
+default_host='localhost'
+default_port=5212
+
+host=''
+port=''
+
+[database]
+path = 'data/db.sqlite'
