@@ -8,7 +8,7 @@ from exchanger.core.vo.exchange_pair import ExchangePair, UpdateExchangeRate
 
 class ExchangeRateRepository(Protocol):
     @abstractmethod
-    def create(self, exchange_rate: ExchangeRate) -> int: ...
+    def create(self, exchange_rate: ExchangeRate) -> ExchangeRate: ...
 
     @abstractmethod
     def find_by_pair(

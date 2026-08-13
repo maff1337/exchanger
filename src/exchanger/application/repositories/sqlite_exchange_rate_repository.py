@@ -16,11 +16,13 @@ class SqliteExchangeRateRepository(ExchangeRateRepository):
     def __init__(self, db_exchange_rate_mapper: ExchangeRateDataMapper) -> None:
         self._db_exchange_rate_mapper = db_exchange_rate_mapper
 
-    def create(self, exchange_rate: ExchangeRate) -> int:
+    def create(self, exchange_rate: ExchangeRate) -> ExchangeRate:
         try:
             id = self._db_exchange_rate_mapper.insert(exchange_rate)
 
-            return id
+            exchange_rate.id = id
+            
+            return exchange_rate
         except IntegrityError:
             raise ExchangeRateAlreadyExists(
                 f'Exchange rate {exchange_rate.base.code.value}-{exchange_rate.target.code.value} already exists')

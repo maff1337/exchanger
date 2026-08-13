@@ -12,9 +12,9 @@ class ExchangeRateService(ExchangeRateServiceProtocol):
     def __init__(self, exchange_rate_repo: ExchangeRateRepository) -> None:
         self._exchange_rate_repo = exchange_rate_repo
 
-    def create(self, exchange_rate: ExchangeRate) -> int:
-        id = self._exchange_rate_repo.create(exchange_rate)
-        return id
+    def create(self, exchange_rate: ExchangeRate) -> ExchangeRate:
+        er = self._exchange_rate_repo.create(exchange_rate)
+        return er
 
     def find_by_pair(self, exchange_pair: ExchangePair) -> ExchangeRate:
         exchange_rate = self._exchange_rate_repo.find_by_pair(exchange_pair)

@@ -22,7 +22,7 @@ class CurrencyServiceProtocol(Protocol):
 
 class ExchangeRateServiceProtocol(Protocol):
     @abstractmethod
-    def create(self, exchange_rate: ExchangeRate) -> int: ...
+    def create(self, exchange_rate: ExchangeRate) -> ExchangeRate: ...
 
     @abstractmethod
     def find_by_pair(

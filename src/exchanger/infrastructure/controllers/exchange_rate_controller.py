@@ -116,11 +116,13 @@ class HttpExchangeRateController:
                 rate=rate
             )
 
-            id = self._er_service.create(
-                self._er_dto_mapper.create_dto_to_domain(exchange_rate_dto)
+            er_dto = self._er_dto_mapper.domain_to_dto(
+                self._er_service.create(
+                    self._er_dto_mapper.create_dto_to_domain(exchange_rate_dto)
+                )
             )
 
-            body = {'id': id}
+            body = er_dto.as_dict()
 
             response = HttpResponse(
                 201,

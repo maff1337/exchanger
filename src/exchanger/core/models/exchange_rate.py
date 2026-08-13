@@ -5,7 +5,7 @@ from exchanger.core.models.currency import Currency
 from exchanger.exceptions import CurrencyEquality, NegativeAmount
 
 
-@dataclass(frozen=True)
+@dataclass
 class ExchangeRate:
     base: Currency
     target: Currency
