@@ -58,12 +58,14 @@ class HttpCurrencyController:
                 name=name,
                 sign=sign
             )
-            id = self._currency_service.create(
-                currency=self._currency_dto_mapper.create_dto_to_domain(
-                    currency_dto)
+            currency_dto = self._currency_dto_mapper.domain_to_dto(
+                self._currency_service.create(
+                    currency=self._currency_dto_mapper.create_dto_to_domain(
+                        currency_dto)
+                )
             )
 
-            body = {'id': id}
+            body = currency_dto.as_dict()
 
             response = HttpResponse(
                 201, {'Content-Type': 'application/json'}, body)

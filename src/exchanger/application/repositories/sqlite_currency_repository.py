@@ -16,11 +16,13 @@ class SqliteCurrencyRepository(CurrencyRepository):
     def __init__(self, db_currency_mapper: CurrencyDataMapper) -> None:
         self._db_currency_mapper = db_currency_mapper
 
-    def create(self, currency: Currency) -> int:
+    def create(self, currency: Currency) -> Currency:
         try:
             id = self._db_currency_mapper.insert(currency)
-
-            return id
+            
+            currency.id = id
+            
+            return currency
         except IntegrityError:
             raise CurrencyAlreadyExists(
                 f'Currency with code {currency.code.value} already exists')

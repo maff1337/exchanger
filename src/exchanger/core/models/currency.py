@@ -5,7 +5,7 @@ from exchanger.core.vo.currency_code import Code
 from exchanger.exceptions import CurrencyValue
 
 
-@dataclass(frozen=True)
+@dataclass
 class Currency:
     code: Code
     name: str
