@@ -5,6 +5,7 @@ from exchanger.infrastructure.controllers.types import HttpRequest, HttpResponse
 
 type Handler = Callable[[HttpRequest], HttpResponse]
 
+
 @dataclass
 class Route:
     method: str

@@ -31,7 +31,7 @@ class CurrencyDto:
         object.__setattr__(self, 'code', self.code.strip())
         object.__setattr__(self, 'name', self.name.strip())
         object.__setattr__(self, 'sign', self.sign.strip())
-    
+
     def as_dict(self) -> dict[str, Any]:
         return {
             'id': self.id,

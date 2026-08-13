@@ -34,4 +34,3 @@ class ExchangeRateDataMapper(Protocol):
 
     @abstractmethod
     def update(self, exchange_rate: UpdateExchangeRate) -> None: ...
-    

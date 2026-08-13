@@ -1,4 +1,3 @@
-
 from exchanger.application.services.services_protocols import (
     ExchangeRateServiceProtocol,
 )
@@ -165,10 +164,10 @@ class HttpExchangeRateController:
 
             exchange_rate_dto = self._er_dto_mapper.domain_to_dto(
                 self._er_service.find_by_pair(
-                exchange_pair=self._er_dto_mapper.pair_dto_to_domain(
-                    exchange_pair_dto
+                    exchange_pair=self._er_dto_mapper.pair_dto_to_domain(
+                        exchange_pair_dto
+                    )
                 )
-            )
             )
 
             body = exchange_rate_dto.as_dict()
@@ -230,32 +229,33 @@ class HttpExchangeRateController:
                 raise ExchangeRateException('Body is missing')
 
             body = request.body
-            
+
             if not isinstance(body, dict):
                 raise ExchangeRateException('JSON structure expected')
-            
+
             rate = body.get('rate')
-            
+
             if not rate:
                 raise ExchangeRateException('Body param is missing: rate')
-            
+
             if not request.path_params:
                 raise ExchangeRateException('Path params are missing')
-            
+
             pair = request.path_params.get('pair')
             if not pair:
                 raise ExchangeRateException('Path param is missing: pair')
-            
+
             if len(pair) != 6:
-                raise ExchangeRateException('Pair is not a valid exchange pair')
-            
+                raise ExchangeRateException(
+                    'Pair is not a valid exchange pair')
+
             pair = str(pair)
             update_dto = UpdateExchangeRateDto(pair[:3], pair[3:], rate)
-            
+
             self._er_service.update_by_pair(
                 self._er_dto_mapper.update_to_domain(update_dto)
             )
-            
+
             return HttpResponse(
                 status_code=200,
                 headers={'Content-Type': 'application/json'}
@@ -272,5 +272,3 @@ class HttpExchangeRateController:
                 headers={'Content-Type': 'application/json'},
                 body={'message': str(e)}
             )
-            
-    

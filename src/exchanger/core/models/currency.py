@@ -22,4 +22,5 @@ class Currency:
                 "Name must contains only letters, spaces, parentheses () and apostrophe ’")
 
         if not (1 <= len(self.sign) <= 3):
-            raise CurrencyValue('Sign length must be between 1 and 3 characters')
+            raise CurrencyValue(
+                'Sign length must be between 1 and 3 characters')

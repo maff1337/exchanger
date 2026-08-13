@@ -20,7 +20,7 @@ class SqliteCurrencyRepository(CurrencyRepository):
     def create(self, currency: Currency) -> Currency:
         try:
             id = self._db_currency_mapper.insert(currency)
-            
+
             return replace(currency, id=id)
         except IntegrityError:
             raise CurrencyAlreadyExists(

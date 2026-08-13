@@ -21,4 +21,3 @@ class ExchangeRateRepository(Protocol):
 
     @abstractmethod
     def update_by_pair(self, update: UpdateExchangeRate) -> None: ...
-    

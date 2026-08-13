@@ -20,7 +20,7 @@ class SqliteExchangeRateRepository(ExchangeRateRepository):
     def create(self, exchange_rate: ExchangeRate) -> ExchangeRate:
         try:
             id = self._db_exchange_rate_mapper.insert(exchange_rate)
-            
+
             return replace(exchange_rate, id=id)
         except IntegrityError:
             raise ExchangeRateAlreadyExists(
@@ -47,7 +47,7 @@ class SqliteExchangeRateRepository(ExchangeRateRepository):
     def update_by_pair(self, update: UpdateExchangeRate) -> None:
         try:
             self._db_exchange_rate_mapper.update(update)
-        
+
         except IntegrityError:
             raise ExchangeRateNotFound(
                 f'Exchange rate {update.base_code.value}-{update.target_code.value} not found')
