@@ -82,3 +82,38 @@ class ExchangePairDto:
 
         self.base_code = self.base_code.strip()
         self.target_code = self.target_code.strip()
+
+
+@dataclass
+class UpdateExchangeRateDto:
+    base_code: str
+    target_code: str
+    rate: str | float
+    
+    def __post_init__(self) -> None:
+        if not isinstance(self.base_code, str):
+            raise ExchangeRateTypeMismatch(
+                f'Base code must be `str` type. Code type - {type(self.base_code)}'
+            )
+        
+        if not isinstance(self.target_code, str):
+            raise ExchangeRateTypeMismatch(
+                f'Target code must be `str` type. Code type - {type(self.target_code)}'
+            )
+        
+        if not isinstance(self.rate, (str, float)):
+            raise ExchangeRateTypeMismatch(
+                f'Rate must be `str` or `float` type. Rate type - {type(self.rate)}'
+            )
+        
+        if not self._is_number(self.rate):
+            raise ExchangeRateException(
+                f'Rate must be a valid number'
+            )
+    
+    def _is_number(self, value: Any) -> bool:
+        try:
+            value = float(value)
+            return True
+        except ValueError:
+            return False

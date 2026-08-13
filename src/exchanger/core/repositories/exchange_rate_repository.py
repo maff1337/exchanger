@@ -3,7 +3,7 @@ from collections.abc import Sequence
 from typing import Protocol
 
 from exchanger.core.models.exchange_rate import ExchangeRate
-from exchanger.core.vo.exchange_pair import ExchangePair
+from exchanger.core.vo.exchange_pair import ExchangePair, UpdateExchangeRate
 
 
 class ExchangeRateRepository(Protocol):
@@ -18,3 +18,7 @@ class ExchangeRateRepository(Protocol):
 
     @abstractmethod
     def find_all(self) -> Sequence[ExchangeRate]: ...
+
+    @abstractmethod
+    def update_by_pair(self, update: UpdateExchangeRate) -> None: ...
+    

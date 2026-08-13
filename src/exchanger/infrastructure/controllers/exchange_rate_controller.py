@@ -17,6 +17,7 @@ from exchanger.infrastructure.dto.currency_dto import CurrencyDto
 from exchanger.infrastructure.dto.exchange_rate_dto import (
     CreateExchangeRateDto,
     ExchangePairDto,
+    UpdateExchangeRateDto,
 )
 from exchanger.infrastructure.dto_mappers.exchange_rate_mapper import (
     ExchangeRateDtoMapper,
@@ -229,3 +230,54 @@ class HttpExchangeRateController:
                 headers={'Content-Type': 'application/json'},
                 body={'message': str(e)}
             )
+
+    def update_exchange_rate(self, request: HttpRequest) -> HttpResponse:
+        try:
+            if not request.body:
+                raise ExchangeRateException('Body is missing')
+
+            body = request.body
+            
+            if not isinstance(body, dict):
+                raise ExchangeRateException('JSON structure expected')
+            
+            rate = body.get('rate')
+            
+            if not rate:
+                raise ExchangeRateException('Body param is missing: rate')
+            
+            if not request.path_params:
+                raise ExchangeRateException('Path params are missing')
+            
+            pair = request.path_params.get('pair')
+            if not pair:
+                raise ExchangeRateException('Path param is missing: pair')
+            
+            if len(pair) != 6:
+                raise ExchangeRateException('Pair is not a valid exchange pair')
+            
+            pair = str(pair)
+            update_dto = UpdateExchangeRateDto(pair[:3], pair[3:], rate)
+            
+            self._er_service.update_by_pair(
+                self._er_dto_mapper.update_to_domain(update_dto)
+            )
+            
+            return HttpResponse(
+                status_code=200,
+                headers={'Content-Type': 'application/json'}
+            )
+        except (NegativeAmount, ExchangeRateException, CurrencyCodeEquality, ExchangeRateTypeMismatch) as e:
+            return HttpResponse(
+                status_code=400,
+                headers={'Content-Type': 'application/json'},
+                body={'message': str(e)}
+            )
+        except Exception as e:
+            return HttpResponse(
+                status_code=500,
+                headers={'Content-Type': 'application/json'},
+                body={'message': str(e)}
+            )
+            
+    

@@ -6,7 +6,7 @@ from exchanger.core.models.conversion import RequestConversion, ResponseConversi
 from exchanger.core.models.currency import Currency
 from exchanger.core.models.exchange_rate import ExchangeRate
 from exchanger.core.vo.currency_code import Code
-from exchanger.core.vo.exchange_pair import ExchangePair
+from exchanger.core.vo.exchange_pair import ExchangePair, UpdateExchangeRate
 
 
 class CurrencyServiceProtocol(Protocol):
@@ -32,6 +32,9 @@ class ExchangeRateServiceProtocol(Protocol):
 
     @abstractmethod
     def find_all(self) -> Sequence[ExchangeRate]: ...
+
+    @abstractmethod
+    def update_by_pair(self, update: UpdateExchangeRate) -> None: ...
 
 
 class ConversionServiceProtocol(Protocol):

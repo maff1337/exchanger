@@ -5,7 +5,7 @@ from sqlite3 import Connection, IntegrityError
 from exchanger.core.models.currency import Currency
 from exchanger.core.models.exchange_rate import ExchangeRate
 from exchanger.core.vo.currency_code import Code
-from exchanger.core.vo.exchange_pair import ExchangePair
+from exchanger.core.vo.exchange_pair import ExchangePair, UpdateExchangeRate
 from exchanger.infrastructure.data_mappers.data_mappers import ExchangeRateDataMapper
 from exchanger.infrastructure.database.shared import sqlite_cursor
 
@@ -98,3 +98,22 @@ class SqliteExchangeRateDataMapper(ExchangeRateDataMapper):
             rows = cursor.execute(query).fetchall()
 
             return [self._row_to_domain(row) for row in rows]
+
+    def update(self, exchange_rate: UpdateExchangeRate) -> None:
+        with sqlite_cursor(self._conn) as cursor:
+            
+            update_query = '''UPDATE exchange_rate AS er
+                SET rate = ?
+                FROM currency AS base
+                JOIN currency AS target
+                    ON target.id = er.target_currency_id
+                WHERE er.base_currency_id = base.id
+                AND base.code = ?
+                AND target.code = ?
+                '''
+
+            cursor.execute(update_query, (exchange_rate.base_code.value,
+                                         exchange_rate.target_code.value, str(exchange_rate.rate))).fetchone()
+
+            if cursor.rowcount != 1:
+                raise IntegrityError('Not Found')

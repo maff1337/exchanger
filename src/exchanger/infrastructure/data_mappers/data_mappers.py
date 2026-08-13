@@ -5,7 +5,7 @@ from typing import Protocol
 from exchanger.core.models.currency import Currency
 from exchanger.core.models.exchange_rate import ExchangeRate
 from exchanger.core.vo.currency_code import Code
-from exchanger.core.vo.exchange_pair import ExchangePair
+from exchanger.core.vo.exchange_pair import ExchangePair, UpdateExchangeRate
 
 
 class CurrencyDataMapper(Protocol):
@@ -31,3 +31,7 @@ class ExchangeRateDataMapper(Protocol):
 
     @abstractmethod
     def get_all(self) -> Sequence[ExchangeRate]: ...
+
+    @abstractmethod
+    def update(self, exchange_rate: UpdateExchangeRate) -> None: ...
+    

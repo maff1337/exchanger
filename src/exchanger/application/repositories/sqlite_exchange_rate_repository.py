@@ -3,7 +3,7 @@ from sqlite3 import IntegrityError
 
 from exchanger.core.models.exchange_rate import ExchangeRate
 from exchanger.core.repositories.exchange_rate_repository import ExchangeRateRepository
-from exchanger.core.vo.exchange_pair import ExchangePair
+from exchanger.core.vo.exchange_pair import ExchangePair, UpdateExchangeRate
 from exchanger.exceptions import (
     ExchangeRateAlreadyExists,
     ExchangeRateException,
@@ -42,3 +42,11 @@ class SqliteExchangeRateRepository(ExchangeRateRepository):
             return exchange_rates
         except IntegrityError as e:
             raise ExchangeRateException(e)
+
+    def update_by_pair(self, update: UpdateExchangeRate) -> None:
+        try:
+            self._db_exchange_rate_mapper.update(update)
+        
+        except IntegrityError:
+            raise ExchangeRateNotFound(
+                f'Exchange rate {update.base_code.value}-{update.target_code.value} not found')
