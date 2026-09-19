@@ -18,6 +18,11 @@ def create_handler(router: Router) -> type[BaseHTTPRequestHandler]:
         def do_PATCH(self) -> None:
             self._handle_request()
 
+        def do_OPTIONS(self) -> None:
+            self.send_response(204)
+            self._send_cors_headers()
+            self.end_headers()
+
         def _handle_request(self) -> None:
             try:
                 request = self._create_request()
@@ -99,5 +104,11 @@ def create_handler(router: Router) -> type[BaseHTTPRequestHandler]:
             ).encode('utf-8')
 
             self.wfile.write(body)
+
+        def _send_cors_headers(self) -> None:
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Access-Control-Allow-Methods",
+                             "GET, POST, PATCH, OPTIONS")
+            self.send_header("Access-Control-Allow-Headers", "Content-Type")
 
     return HttpHandler
