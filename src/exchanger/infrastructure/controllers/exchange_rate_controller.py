@@ -6,7 +6,10 @@ from exchanger.application.services.services_protocols import (
 )
 from exchanger.exceptions import (
     CurrencyCodeEquality,
+    CurrencyCodeValue,
     CurrencyEquality,
+    CurrencyException,
+    CurrencyValue,
     ExchangeRateAlreadyExists,
     ExchangeRateException,
     ExchangeRateNotFound,
@@ -86,7 +89,8 @@ class HttpExchangeRateController:
                 headers={'Content-Type': 'application/json'},
                 body={'message': str(e)}
             )
-        except (NegativeAmount, ExchangeRateException, CurrencyEquality, CurrencyCodeEquality, ExchangeRateTypeMismatch) as e:
+        except (NegativeAmount, ExchangeRateException, CurrencyEquality, CurrencyCodeEquality, ExchangeRateTypeMismatch,
+                CurrencyException, CurrencyCodeValue, CurrencyValue) as e:
             return HttpResponse(
                 status_code=400,
                 headers={'Content-Type': 'application/json'},
