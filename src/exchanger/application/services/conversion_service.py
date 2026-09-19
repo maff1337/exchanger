@@ -66,7 +66,7 @@ class ConversionService(ConversionServiceProtocol):
             base_currency = exchange_rate.base
             target_currency = exchange_rate.target
 
-            rate = exchange_rate.rate
+            rate = exchange_rate.rate.quantize(Decimal('0.000001'))
 
         converted_amount = request_conversion.amount * rate
 
@@ -75,5 +75,5 @@ class ConversionService(ConversionServiceProtocol):
             target=target_currency,
             rate=rate,
             amount=request_conversion.amount,
-            converted_amount=converted_amount
+            converted_amount=converted_amount.quantize(Decimal('0.000001'))
         )

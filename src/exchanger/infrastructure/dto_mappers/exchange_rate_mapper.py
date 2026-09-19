@@ -27,7 +27,7 @@ class ExchangeRateDtoMapper:
         return ExchangeRate(
             base=base_currency,
             target=target_currency,
-            rate=Decimal(dto.rate),
+            rate=Decimal(dto.rate).quantize(Decimal('0.000001')),
             id=dto.id
         )
 
@@ -59,5 +59,5 @@ class ExchangeRateDtoMapper:
         return UpdateExchangeRate(
             Code(update.base_code),
             Code(update.target_code),
-            rate=Decimal(update.rate)
+            rate=Decimal(update.rate).quantize(Decimal('0.000001'))
         )

@@ -21,7 +21,7 @@ class RequestConversionDto:
         if not decimal_pattern.match(str(self.amount)):
             raise ConversionException('Amount must be a valid Decimal number')
 
-        self.amount = Decimal(self.amount)
+        self.amount = Decimal(self.amount).quantize(Decimal('0.000001'))
 
 
 @dataclass

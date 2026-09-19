@@ -29,7 +29,7 @@ class CreateExchangeRateDto:
         if not decimal_pattern.match(str(self.rate)):
             raise ExchangeRateException('Rate must be a valid Decimal number')
 
-        self.rate = Decimal(str(self.rate))
+        self.rate = Decimal(str(self.rate)).quantize(Decimal('0.000001'))
 
 
 @dataclass

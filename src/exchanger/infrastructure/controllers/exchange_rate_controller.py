@@ -68,7 +68,7 @@ class HttpExchangeRateController:
             er_dto = self._er_dto_mapper.domain_to_dto(
                 self._er_service.create(
                     self._er_dto_mapper.pair_dto_to_domain(exchange_pair_dto),
-                    Decimal(rate)
+                    Decimal(rate).quantize(Decimal('0.000001'))
                 )
             )
 
