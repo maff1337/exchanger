@@ -9,19 +9,18 @@ from exchanger.infrastructure.dto.currency_dto import CurrencyDto
 
 @dataclass
 class CreateExchangeRateDto:
-    base_currency_dto: CurrencyDto
-    target_currency_dto: CurrencyDto
+    base_currency_code: str
+    target_currency_code: str
     rate: Decimal
 
     def __post_init__(self) -> None:
         decimal_pattern = compile(r'^\d+(\.\d+)?$')
-        if not isinstance(self.base_currency_dto, CurrencyDto):
-            raise ExchangeRateTypeMismatch(
-                'Base currency DTO must be `CurrencyDto` type')
 
-        if not isinstance(self.target_currency_dto, CurrencyDto):
-            raise ExchangeRateTypeMismatch(
-                'Target currency DTO must be `CurrencyDto` type')
+        if not isinstance(self.base_currency_code, str):
+            ...
+
+        if not isinstance(self.target_currency_code, str):
+            ...
 
         if not isinstance(self.rate, (Decimal, str)):
             raise ExchangeRateTypeMismatch(

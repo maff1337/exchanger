@@ -1,5 +1,6 @@
 from abc import abstractmethod
 from collections.abc import Sequence
+from decimal import Decimal
 from typing import Protocol
 
 from exchanger.core.models.conversion import RequestConversion, ResponseConversion
@@ -22,7 +23,8 @@ class CurrencyServiceProtocol(Protocol):
 
 class ExchangeRateServiceProtocol(Protocol):
     @abstractmethod
-    def create(self, exchange_rate: ExchangeRate) -> ExchangeRate: ...
+    def create(self, exchange_pair: ExchangePair,
+               rate: Decimal) -> ExchangeRate: ...
 
     @abstractmethod
     def find_by_pair(

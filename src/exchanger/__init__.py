@@ -56,7 +56,7 @@ def main() -> None:
         conv_dto_mapper = ConversionDtoMapper(curr_dto_mapper, er_dto_mapper)
 
         curr_service = CurrencyService(curr_repo)
-        er_service = ExchangeRateService(er_repo)
+        er_service = ExchangeRateService(er_repo, curr_repo)
         conv_service = ConversionService(er_repo)
 
         curr_controller = HttpCurrencyController(curr_dto_mapper, curr_service)

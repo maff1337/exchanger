@@ -1,4 +1,7 @@
+from decimal import Decimal
+
 from exchanger.application.services.services_protocols import (
+    CurrencyServiceProtocol,
     ExchangeRateServiceProtocol,
 )
 from exchanger.exceptions import (
@@ -41,82 +44,31 @@ class HttpExchangeRateController:
             if not isinstance(body, dict):
                 raise ExchangeRateException('JSON structure expected')
 
-            base_currency = body.get('baseCurrency')
-            target_currency = body.get('targetCurrency')
+            base_currency_code = body.get('baseCurrency')
+            target_currency_code = body.get('targetCurrency')
             rate = body.get('rate')
 
-            if not base_currency:
+            if not base_currency_code:
                 raise ExchangeRateException(
                     'Body param is missing: baseCurrency')
 
-            if not target_currency:
+            if not target_currency_code:
                 raise ExchangeRateException(
                     'Body param is missing: targetCurrency')
 
             if not rate:
                 raise ExchangeRateException('Body param is missing: rate')
 
-            base_c_id = base_currency.get('id')
-            base_c_code = base_currency.get('code')
-            base_c_name = base_currency.get('name')
-            base_c_sign = base_currency.get('sign')
+            if not isinstance(rate, (str, float)):
+                raise ExchangeRateException('Rate must be valid decimal value')
 
-            target_c_id = target_currency.get('id')
-            target_c_code = target_currency.get('code')
-            target_c_name = target_currency.get('name')
-            target_c_sign = target_currency.get('sign')
-
-            if not base_c_id:
-                raise ExchangeRateException(
-                    'Body param is missing: baseCurrency: id')
-
-            if not base_c_code:
-                raise ExchangeRateException(
-                    'Body param is missing: baseCurrency: code')
-
-            if not base_c_name:
-                raise ExchangeRateException(
-                    'Body param is missing: baseCurrency: name')
-
-            if not base_c_sign:
-                raise ExchangeRateException(
-                    'Body param is missing: baseCurrency: sign')
-
-            if not target_c_id:
-                raise ExchangeRateException(
-                    'Body param is missing: targetCurrency: id')
-
-            if not target_c_code:
-                raise ExchangeRateException(
-                    'Body param is missing: targetCurrency: code')
-
-            if not target_c_name:
-                raise ExchangeRateException(
-                    'Body param is missing: targetCurrency: name')
-
-            if not target_c_sign:
-                raise ExchangeRateException(
-                    'Body param is missing: targetCurrency: sign')
-
-            exchange_rate_dto = CreateExchangeRateDto(
-                base_currency_dto=CurrencyDto(
-                    id=base_c_id,
-                    code=base_c_code,
-                    name=base_c_name,
-                    sign=base_c_sign
-                ),
-                target_currency_dto=CurrencyDto(
-                    id=target_c_id,
-                    code=target_c_code,
-                    name=target_c_name,
-                    sign=target_c_sign
-                ),
-                rate=rate
-            )
+            exchange_pair_dto = ExchangePairDto(
+                base_currency_code, target_currency_code)
 
             er_dto = self._er_dto_mapper.domain_to_dto(
                 self._er_service.create(
-                    self._er_dto_mapper.create_dto_to_domain(exchange_rate_dto)
+                    self._er_dto_mapper.pair_dto_to_domain(exchange_pair_dto),
+                    Decimal(rate)
                 )
             )
 
