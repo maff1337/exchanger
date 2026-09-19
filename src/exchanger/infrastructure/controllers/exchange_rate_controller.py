@@ -1,7 +1,6 @@
 from decimal import Decimal
 
 from exchanger.application.services.services_protocols import (
-    CurrencyServiceProtocol,
     ExchangeRateServiceProtocol,
 )
 from exchanger.exceptions import (
@@ -17,9 +16,7 @@ from exchanger.exceptions import (
     NegativeAmount,
 )
 from exchanger.infrastructure.controllers.types import HttpRequest, HttpResponse
-from exchanger.infrastructure.dto.currency_dto import CurrencyDto
 from exchanger.infrastructure.dto.exchange_rate_dto import (
-    CreateExchangeRateDto,
     ExchangePairDto,
     UpdateExchangeRateDto,
 )

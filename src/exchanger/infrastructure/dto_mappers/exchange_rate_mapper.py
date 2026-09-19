@@ -4,7 +4,6 @@ from exchanger.core.models.exchange_rate import ExchangeRate
 from exchanger.core.vo.currency_code import Code
 from exchanger.core.vo.exchange_pair import ExchangePair, UpdateExchangeRate
 from exchanger.infrastructure.dto.exchange_rate_dto import (
-    CreateExchangeRateDto,
     ExchangePairDto,
     ExchangeRateDto,
     UpdateExchangeRateDto,
