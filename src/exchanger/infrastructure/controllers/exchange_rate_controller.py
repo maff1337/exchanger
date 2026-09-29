@@ -8,6 +8,7 @@ from exchanger.exceptions import (
     CurrencyCodeValue,
     CurrencyEquality,
     CurrencyException,
+    CurrencyNotFound,
     CurrencyValue,
     ExchangeRateAlreadyExists,
     ExchangeRateException,
@@ -138,7 +139,7 @@ class HttpExchangeRateController:
                 headers={'Content-Type': 'application/json'},
                 body={'message': str(e)}
             )
-        except ExchangeRateNotFound as e:
+        except (ExchangeRateNotFound, CurrencyNotFound) as e:
             return HttpResponse(
                 status_code=404,
                 headers={'Content-Type': 'application/json'},
@@ -209,14 +210,18 @@ class HttpExchangeRateController:
             pair = str(pair)
             update_dto = UpdateExchangeRateDto(pair[:3], pair[3:], rate)
 
-            self._er_service.update_by_pair(
-                self._er_dto_mapper.update_to_domain(update_dto)
+            exchange_rate_dto = self._er_dto_mapper.domain_to_dto(
+                self._er_service.update_by_pair(
+                    self._er_dto_mapper.update_to_domain(update_dto)
+                )
             )
+
+            body = exchange_rate_dto.as_dict()
 
             return HttpResponse(
                 status_code=200,
                 headers={'Content-Type': 'application/json'},
-                body={"rate": rate}
+                body=body
             )
         except (NegativeAmount, ExchangeRateException, CurrencyCodeEquality, ExchangeRateTypeMismatch) as e:
             return HttpResponse(

@@ -44,10 +44,11 @@ class SqliteExchangeRateRepository(ExchangeRateRepository):
         except IntegrityError as e:
             raise ExchangeRateException(e)
 
-    def update_by_pair(self, update: UpdateExchangeRate) -> None:
+    def update_by_pair(self, update: UpdateExchangeRate) -> ExchangeRate:
         try:
-            self._db_exchange_rate_mapper.update(update)
+            exchange_rate = self._db_exchange_rate_mapper.update(update)
 
+            return exchange_rate
         except IntegrityError:
             raise ExchangeRateNotFound(
                 f'Exchange rate {update.base_code.value}-{update.target_code.value} not found')

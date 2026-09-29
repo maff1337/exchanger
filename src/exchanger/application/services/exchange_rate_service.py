@@ -32,5 +32,5 @@ class ExchangeRateService(ExchangeRateServiceProtocol):
     def find_all(self) -> Sequence[ExchangeRate]:
         return self._exchange_rate_repo.find_all()
 
-    def update_by_pair(self, update: UpdateExchangeRate) -> None:
-        self._exchange_rate_repo.update_by_pair(update)
+    def update_by_pair(self, update: UpdateExchangeRate) -> ExchangeRate:
+        return self._exchange_rate_repo.update_by_pair(update)

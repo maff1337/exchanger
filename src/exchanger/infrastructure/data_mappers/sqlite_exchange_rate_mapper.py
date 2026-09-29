@@ -53,7 +53,7 @@ class SqliteExchangeRateDataMapper(ExchangeRateDataMapper):
                                 c1.full_name as base_name,
                                 c1.sign as base_sign,
                                 c1.id as base_id,
-                                
+
                                 c2.code AS target_code,
                                 c2.full_name AS target_name,
                                 c2.sign AS target_sign,
@@ -84,7 +84,7 @@ class SqliteExchangeRateDataMapper(ExchangeRateDataMapper):
                                 c1.full_name as base_name,
                                 c1.sign as base_sign,
                                 c1.id as base_id,
-                                
+
                                 c2.code AS target_code,
                                 c2.full_name AS target_name,
                                 c2.sign AS target_sign,
@@ -99,7 +99,7 @@ class SqliteExchangeRateDataMapper(ExchangeRateDataMapper):
 
             return [self._row_to_domain(row) for row in rows]
 
-    def update(self, exchange_rate: UpdateExchangeRate) -> None:
+    def update(self, exchange_rate: UpdateExchangeRate) -> ExchangeRate:
         with sqlite_cursor(self._conn) as cursor:
 
             update_query = '''UPDATE exchange_rate AS er
@@ -107,9 +107,36 @@ class SqliteExchangeRateDataMapper(ExchangeRateDataMapper):
                     WHERE base_currency_id = (SELECT id FROM currency WHERE code = ?)
                     AND target_currency_id = (SELECT id FROM currency WHERE code = ?)
                 '''
+            select_query = '''SELECT er.id as id,
+                                c1.code as base_code,
+                                c1.full_name as base_name,
+                                c1.sign as base_sign,
+                                c1.id as base_id,
+
+                                c2.code AS target_code,
+                                c2.full_name AS target_name,
+                                c2.sign AS target_sign,
+                                c2.id AS target_id,
+                                er.rate as rate
+            FROM exchange_rate AS er
+            INNER JOIN currency AS c1 ON c1.id = er.base_currency_id
+            INNER JOIN currency AS c2 ON c2.id = er.target_currency_id
+            WHERE c1.code = ?
+            AND c2.code = ?
+            '''
 
             cursor.execute(update_query, (str(exchange_rate.rate), exchange_rate.base_code.value,
                                           exchange_rate.target_code.value))
 
             if cursor.rowcount != 1:
                 raise IntegrityError('Not Found')
+
+            row = cursor.execute(
+                select_query,
+                (exchange_rate.base_code.value, exchange_rate.target_code.value)
+            ).fetchone()
+
+            if row:
+                return self._row_to_domain(row)
+            else:
+                raise IntegrityError('Exchange rate not found')
