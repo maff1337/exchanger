@@ -79,17 +79,17 @@ class HttpConversionController:
                 body=body
             )
             return response
-        except ExchangeRateNotFound as e:
-            return HttpResponse(
-                status_code=404,
-                headers={'Content-Type': 'application/json'},
-                body={'message': str(e)}
-            )
         except (NegativeAmount, ExchangeRateException, ConversionException,
                 CurrencyException, CurrencyCodeValue, CurrencyValue,
                 CurrencyEquality, CurrencyCodeEquality, ExchangeRateTypeMismatch) as e:
             return HttpResponse(
                 status_code=400,
+                headers={'Content-Type': 'application/json'},
+                body={'message': str(e)}
+            )
+        except ExchangeRateNotFound as e:
+            return HttpResponse(
+                status_code=404,
                 headers={'Content-Type': 'application/json'},
                 body={'message': str(e)}
             )

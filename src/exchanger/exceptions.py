@@ -18,7 +18,7 @@ class CurrencyAlreadyExists(CurrencyException):
     ...
 
 
-class CurrencyNotFound(CurrencyException):
+class CurrencyNotFound(Exception):
     ...
 
 
@@ -30,7 +30,7 @@ class ExchangeRateAlreadyExists(ExchangeRateException):
     ...
 
 
-class ExchangeRateNotFound(ExchangeRateException):
+class ExchangeRateNotFound(Exception):
     ...
 
 

@@ -111,15 +111,15 @@ class HttpCurrencyController:
                 body=body
             )
             return response
-        except CurrencyNotFound as e:
-            return HttpResponse(
-                status_code=404,
-                headers={'Content-Type': 'application/json'},
-                body={'message': str(e)}
-            )
         except (CurrencyException, CurrencyCodeValue, CurrencyValue) as e:
             return HttpResponse(
                 status_code=400,
+                headers={'Content-Type': 'application/json'},
+                body={'message': str(e)}
+            )
+        except CurrencyNotFound as e:
+            return HttpResponse(
+                status_code=404,
                 headers={'Content-Type': 'application/json'},
                 body={'message': str(e)}
             )

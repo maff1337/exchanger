@@ -44,17 +44,17 @@ class HttpExchangeRateController:
             if not isinstance(body, dict):
                 raise ExchangeRateException('JSON structure expected')
 
-            base_currency_code = body.get('baseCurrency')
-            target_currency_code = body.get('targetCurrency')
+            base_currency_code = body.get('baseCurrencyCode')
+            target_currency_code = body.get('targetCurrencyCode')
             rate = body.get('rate')
 
             if not base_currency_code:
                 raise ExchangeRateException(
-                    'Body param is missing: baseCurrency')
+                    'Body param is missing: baseCurrencyCode')
 
             if not target_currency_code:
                 raise ExchangeRateException(
-                    'Body param is missing: targetCurrency')
+                    'Body param is missing: targetCurrencyCode')
 
             if not rate:
                 raise ExchangeRateException('Body param is missing: rate')
@@ -131,15 +131,15 @@ class HttpExchangeRateController:
                 body=body
             )
             return response
-        except ExchangeRateNotFound as e:
-            return HttpResponse(
-                status_code=404,
-                headers={'Content-Type': 'application/json'},
-                body={'message': str(e)}
-            )
         except (NegativeAmount, ExchangeRateException, CurrencyEquality, CurrencyCodeEquality, ExchangeRateTypeMismatch) as e:
             return HttpResponse(
                 status_code=400,
+                headers={'Content-Type': 'application/json'},
+                body={'message': str(e)}
+            )
+        except ExchangeRateNotFound as e:
+            return HttpResponse(
+                status_code=404,
                 headers={'Content-Type': 'application/json'},
                 body={'message': str(e)}
             )
