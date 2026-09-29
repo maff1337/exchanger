@@ -1,8 +1,16 @@
+from decimal import Decimal
+
 from exchanger.application.services.conversion_service import ConversionService
 from exchanger.exceptions import (
     ConversionException,
+    CurrencyCodeEquality,
+    CurrencyCodeValue,
+    CurrencyEquality,
+    CurrencyException,
+    CurrencyValue,
     ExchangeRateException,
     ExchangeRateNotFound,
+    ExchangeRateTypeMismatch,
     NegativeAmount,
 )
 from exchanger.infrastructure.controllers.types import HttpRequest, HttpResponse
@@ -52,7 +60,7 @@ class HttpConversionController:
                     base_code=from_curr,
                     target_code=to_curr
                 ),
-                amount=amount
+                amount=Decimal(amount).quantize(Decimal("0.000001"))
             )
 
             response_conversion = self._conversion_dto_mapepr.domain_to_response_dto(
@@ -77,7 +85,9 @@ class HttpConversionController:
                 headers={'Content-Type': 'application/json'},
                 body={'message': str(e)}
             )
-        except (NegativeAmount, ExchangeRateException, ConversionException) as e:
+        except (NegativeAmount, ExchangeRateException, ConversionException,
+                CurrencyException, CurrencyCodeValue, CurrencyValue,
+                CurrencyEquality, CurrencyCodeEquality, ExchangeRateTypeMismatch) as e:
             return HttpResponse(
                 status_code=400,
                 headers={'Content-Type': 'application/json'},
