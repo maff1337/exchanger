@@ -215,7 +215,8 @@ class HttpExchangeRateController:
 
             return HttpResponse(
                 status_code=200,
-                headers={'Content-Type': 'application/json'}
+                headers={'Content-Type': 'application/json'},
+                body={"rate": rate}
             )
         except (NegativeAmount, ExchangeRateException, CurrencyCodeEquality, ExchangeRateTypeMismatch) as e:
             return HttpResponse(
