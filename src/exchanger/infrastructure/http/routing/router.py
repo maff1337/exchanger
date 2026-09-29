@@ -49,8 +49,8 @@ class Router:
         request_path: str
     ) -> dict[str, str] | None:
 
-        route_parts = route_path.strip('/').split('/')
-        request_parts = request_path.strip('/').split('/')
+        route_parts = route_path.lstrip('/').split('/')
+        request_parts = request_path.lstrip('/').split('/')
 
         if len(route_parts) != len(request_parts):
             return None
