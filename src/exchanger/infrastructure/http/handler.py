@@ -20,7 +20,12 @@ def create_handler(router: Router) -> type[BaseHTTPRequestHandler]:
 
         def do_OPTIONS(self) -> None:
             self.send_response(204)
+
             self._send_cors_headers()
+            self.send_header("Access-Control-Allow-Methods",
+                             "GET, POST, PATCH, OPTIONS")
+            self.send_header("Access-Control-Allow-Headers", "Content-Type")
+
             self.end_headers()
 
         def _handle_request(self) -> None:
@@ -72,8 +77,6 @@ def create_handler(router: Router) -> type[BaseHTTPRequestHandler]:
             content_type = self.headers.get('Content-Type', '')
             media_type = content_type.split(';', 1)[0].strip().lower()
 
-            print(media_type)
-
             if media_type == 'application/json':
                 return json.loads(raw.decode('utf-8'))
 
@@ -90,6 +93,7 @@ def create_handler(router: Router) -> type[BaseHTTPRequestHandler]:
         def _send_response(self, response: HttpResponse) -> None:
             self.send_response(response.status_code)
 
+            self._send_cors_headers()
             for name, value in response.headers.items():
                 self.send_header(name, value)
 
@@ -107,8 +111,5 @@ def create_handler(router: Router) -> type[BaseHTTPRequestHandler]:
 
         def _send_cors_headers(self) -> None:
             self.send_header("Access-Control-Allow-Origin", "*")
-            self.send_header("Access-Control-Allow-Methods",
-                             "GET, POST, PATCH, OPTIONS")
-            self.send_header("Access-Control-Allow-Headers", "Content-Type")
 
     return HttpHandler
