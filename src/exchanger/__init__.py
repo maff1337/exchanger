@@ -74,7 +74,7 @@ def main() -> None:
 
         router.add_route(
             method='get',
-            path='/currencies/{code}',
+            path='/currency/{code}',
             handler=curr_controller.get_currency_by_code
         )
 
@@ -86,25 +86,25 @@ def main() -> None:
 
         router.add_route(
             method='patch',
-            path='/exchange-rates/{pair}',
+            path='/exchangeRate/{pair}',
             handler=er_controller.update_exchange_rate
         )
 
         router.add_route(
             method='get',
-            path='/exchange-rates',
+            path='/exchangeRates',
             handler=er_controller.get_all_rates
         )
 
         router.add_route(
             method='get',
-            path='/exchange-rates/{pair}',
+            path='/exchangeRate/{pair}',
             handler=er_controller.get_exchange_rate_by_pair
         )
 
         router.add_route(
             method='post',
-            path='/exchange-rates',
+            path='/exchangeRates',
             handler=er_controller.create_exchange_rate
         )
 
