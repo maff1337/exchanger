@@ -16,6 +16,7 @@ from exchanger.exceptions import (
     NegativeAmount,
 )
 from exchanger.infrastructure.controllers.types import HttpRequest, HttpResponse
+from exchanger.infrastructure.controllers.utils import is_number
 from exchanger.infrastructure.dto.exchange_rate_dto import (
     ExchangePairDto,
     UpdateExchangeRateDto,
@@ -59,7 +60,7 @@ class HttpExchangeRateController:
             if not rate:
                 raise ExchangeRateException('Body param is missing: rate')
 
-            if not isinstance(rate, (str, float)):
+            if not is_number(rate):
                 raise ExchangeRateException('Rate must be valid decimal value')
 
             exchange_pair_dto = ExchangePairDto(
@@ -201,6 +202,9 @@ class HttpExchangeRateController:
             if len(pair) != 6:
                 raise ExchangeRateException(
                     'Pair is not a valid exchange pair')
+
+            if not is_number(rate):
+                raise ExchangeRateException('Rate must be valid decimal value')
 
             pair = str(pair)
             update_dto = UpdateExchangeRateDto(pair[:3], pair[3:], rate)

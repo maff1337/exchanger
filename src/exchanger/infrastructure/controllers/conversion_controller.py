@@ -14,6 +14,7 @@ from exchanger.exceptions import (
     NegativeAmount,
 )
 from exchanger.infrastructure.controllers.types import HttpRequest, HttpResponse
+from exchanger.infrastructure.controllers.utils import is_number
 from exchanger.infrastructure.dto.conversion_dto import RequestConversionDto
 from exchanger.infrastructure.dto.exchange_rate_dto import ExchangePairDto
 from exchanger.infrastructure.dto_mappers.conversion_mapper import ConversionDtoMapper
@@ -28,7 +29,6 @@ class HttpConversionController:
         conversion_dto_mapper: ConversionDtoMapper,
         conversion_service: ConversionService,
         exchange_rate_dto_mapper: ExchangeRateDtoMapper,
-
     ) -> None:
         self._conversion_dto_mapepr = conversion_dto_mapper
         self._conversion_service = conversion_service
@@ -54,6 +54,9 @@ class HttpConversionController:
 
             if not amount:
                 raise ConversionException('Query param is missing: amount')
+
+            if not is_number(amount):
+                raise ConversionException('Amount musb be valid number')
 
             request_conversion_dto = RequestConversionDto(
                 exchange_pair=ExchangePairDto(
