@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from decimal import Decimal
 
 from exchanger.core.models.currency import Currency
-from exchanger.exceptions import CurrencyEquality, NegativeAmount
+from exchanger.exceptions import CurrencyEquality
 
 
 @dataclass(frozen=True)
@@ -17,5 +17,4 @@ class ExchangeRate:
             raise CurrencyEquality(
                 'Base and Target currencies cannot be equals')
 
-        if self.rate < 0:
-            raise NegativeAmount('Exchange rate cannot be negative')
+        object.__setattr__(self, "rate", max(self.rate, Decimal("0.000001")))
