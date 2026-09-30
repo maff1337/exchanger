@@ -95,6 +95,12 @@ class HttpExchangeRateController:
                 headers={'Content-Type': 'application/json'},
                 body={'message': str(e)}
             )
+        except CurrencyNotFound as e:
+            return HttpResponse(
+                status_code=404,
+                headers={'Content-Type': 'application/json'},
+                body={'message': str(e)}
+            )
         except Exception as e:
             return HttpResponse(
                 status_code=500,
